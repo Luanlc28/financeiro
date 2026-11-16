@@ -54,8 +54,8 @@ label.f .in{margin-top:5px;color:#fff}
 .bar i{display:block;height:100%;border-radius:99px;transition:width .5s}
 .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px}
 .tag{font-size:12px;padding:3px 10px;border-radius:99px;background:var(--panel2);color:var(--mut)}
-nav{position:fixed;left:0;right:0;bottom:calc(14px + env(safe-area-inset-bottom));z-index:5;padding:0 16px}
-nav div{max-width:400px;margin:0 auto;display:flex;gap:4px;padding:6px;border-radius:99px;background:rgba(28,28,32,.92);backdrop-filter:blur(14px)}
+nav{position:fixed;left:0;right:0;bottom:0;z-index:5;background:#0B0B0D;border-top:1px solid #1E1E22;padding:8px 12px calc(8px + env(safe-area-inset-bottom))}
+nav div{max-width:480px;margin:0 auto;display:flex;gap:4px}
 nav button{flex:1;padding:10px 4px;font-size:13px;font-weight:500;color:var(--mut);border-radius:99px;display:flex;align-items:center;justify-content:center;gap:6px;min-height:46px}
 nav button.on{background:#fff;color:#000}
 nav svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
@@ -112,6 +112,9 @@ try{if(!localStorage.getItem("luan_mig3")){const r=localStorage.getItem("luan_go
 localStorage.setItem("luan_debts",JSON.stringify(iD));
 localStorage.setItem("luan_goal",JSON.stringify(Object.assign({name:"",target:0,monthly:0,deps:[],start:Date.now()},r?JSON.parse(r):{},{bikes:BK})));
 localStorage.setItem("luan_mig3","1")}}catch(e){}
+try{if(!localStorage.getItem("luan_mig4")){const r=JSON.parse(localStorage.getItem("luan_debts")||"null");
+if(r)localStorage.setItem("luan_debts",JSON.stringify(r.map(d=>d.id===1&&d.lp==="2026-11"?Object.assign({},d,{rem:d.rem+1,lp:null}):d)));
+localStorage.setItem("luan_mig4","1")}}catch(e){}
 /* ---------- utilitarios ---------- */
 const fmt=v=>"R$ "+Math.abs(v||0).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
 const sg=v=>(v<0?"- ":"")+fmt(v);
@@ -262,6 +265,7 @@ function App(){
   const totD=act.reduce((s,d)=>s+(d.tp==="parcela"?d.ins*d.rem:(d.total||0)),0);
   const updD=(id,k,v)=>setDebts(debts.map(d=>d.id===id?Object.assign({},d,{[k]:v}):d));
   const delD=id=>{setDebts(debts.filter(d=>d.id!==id));setEd(null)};
+  const unpay=d=>setDebts(debts.map(x=>x.id===d.id?Object.assign({},x,{rem:x.rem+1,lp:null}):x));
   const pay=d=>d.tp==="parcela"?setDebts(debts.map(x=>x.id===d.id?Object.assign({},x,{rem:x.rem-1,lp:cur}):x)):delD(d.id);
 
   const proj=useMemo(()=>{
@@ -282,10 +286,14 @@ function App(){
   const c0=proj[0],real=c0.bal-spent,budget=c0.bal;
   const surplus=proj.reduce((s,p)=>s+p.bal,0)/12;
   const gs=goalStats(goal);
-  const due=act.filter(d=>d.dd>0&&((d.tp==="parcela"&&d.lp!==cur)||(d.tp==="pontual"&&(d.pm||0)===0))).sort((a,b)=>a.dd-b.dd);
+  const nmL="/"+p2(new Date(now.getFullYear(),now.getMonth()+1,1).getMonth()+1);
+  const due=[];act.forEach(d=>{if(!(d.dd>0))return;
+    if(d.tp==="parcela")due.push({d,next:d.lp===cur});
+    else if(d.tp==="pontual"&&(d.pm||0)<=1)due.push({d,next:d.pm===1})});
+  due.sort((a,b)=>(a.next-b.next)||(a.d.dd-b.d.dd));
   const freeTxt=totD<=0?"Sem dívidas":proj.free===null?"Defina um valor mensal para as dívidas em aberto":"Quitação prevista: "+proj[proj.free].full;
 
-  function backup(){const o={};["luan_exp","luan_debts","luan_incomes","luan_expenses_fixed","luan_goal","luan_cfg","luan_mig1","luan_mig3"].forEach(k=>{const v=localStorage.getItem(k);if(v)o[k]=JSON.parse(v)});
+  function backup(){const o={};["luan_exp","luan_debts","luan_incomes","luan_expenses_fixed","luan_goal","luan_cfg","luan_mig1","luan_mig3","luan_mig4"].forEach(k=>{const v=localStorage.getItem(k);if(v)o[k]=JSON.parse(v)});
     const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(o)],{type:"application/json"}));a.download="financeiro-luan-"+dk(Date.now())+".json";a.click()}
   function restore(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);if(!confirm("Substituir os dados atuais pelos do arquivo?"))return;Object.keys(o).filter(k=>k.indexOf("luan_")===0).forEach(k=>localStorage.setItem(k,JSON.stringify(o[k])));location.reload()}catch(x){alert("Arquivo inválido.")}};r.readAsText(f)}
 
@@ -302,7 +310,7 @@ function App(){
           :html`<${F} l="Mês do pagamento"><select class="in" value=${d.pm||0} onChange=${e=>updD(d.id,"pm",+e.target.value)}>${proj.map((p,i)=>html`<option key=${i} value=${i}>${p.full}</option>`)}</select><//>`}</div>`}
         <${F} l="Observações"><input class="in" value=${d.desc||""} onChange=${e=>updD(d.id,"desc",e.target.value)}/><//>
         <div class="flex wrapf">
-          ${par?html`<button class="btn" style=${{flex:1}} disabled=${d.lp===cur} onClick=${()=>{setDebts(debts.map(x=>x.id===d.id?Object.assign({},x,{rem:x.rem-1,lp:cur}):x));setEd(null)}}>${d.lp===cur?"Parcela do mês paga":"Paguei a parcela do mês"}</button>`
+          ${par?(d.lp===cur?html`<button class="btn gh" style=${{flex:1}} onClick=${()=>unpay(d)}>Desfazer pagamento do mês</button>`:html`<button class="btn" style=${{flex:1}} onClick=${()=>{pay(d);setEd(null)}}>Paguei a parcela do mês</button>`)
           :html`<button class="btn" style=${{flex:1}} onClick=${()=>delD(d.id)}>Já paguei tudo</button>`}
           <button class="btn dg" onClick=${()=>{if(confirm("Excluir "+d.n+"?"))delD(d.id)}}>Excluir</button></div>
       </div>`}
@@ -324,7 +332,7 @@ function App(){
           <div class="stack" style=${{gap:10,flex:1}}>${[["Fixas",totF,"#8B5CF6"],["Dívidas do mês",c0.pay,"#FFD60A"],["Sobra",Math.max(0,real),"#00E676"]].map(x=>html`<div key=${x[0]}><div class="mut sm"><i class="dot" style=${{background:x[2]}}></i>${x[0]}</div><div class="num" style=${{fontSize:18,fontWeight:600}}>${fmt(x[1])}</div></div>`)}</div>
         </div></div>
       <div class="card"><div class="row"><h2>Próximos vencimentos</h2><span class="mut sm">${fmt(totD)} em dívidas</span></div>
-        ${due.length===0?html`<p class="mut sm" style=${{marginTop:8}}>Tudo pago este mês.</p>`:due.map(d=>html`<div key=${d.id} class="item row"><span>${d.n} <span class=${"sm "+(d.dd<day?"bad":"mut")}>${d.dd<day?"venceu dia "+d.dd:d.dd===day?"vence hoje":"dia "+d.dd}</span></span><span class="flex" style=${{alignItems:"center",gap:10,flex:"none"}}><span class="num" style=${{fontSize:18}}>${fmt(d.tp==="parcela"?d.ins:d.total)}</span><button class="btn s" aria-label=${"Marcar "+d.n+" como paga"} onClick=${()=>pay(d)}>Paguei</button></span></div>`)}
+        ${due.length===0?html`<p class="mut sm" style=${{marginTop:8}}>Tudo pago este mês.</p>`:due.map(x=>{const d=x.d;return html`<div key=${d.id} class="item row"><span>${d.n} <span class=${"sm "+(!x.next&&d.dd<day?"bad":"mut")}>${x.next?"vence "+p2(d.dd)+nmL:d.dd<day?"venceu dia "+d.dd:d.dd===day?"vence hoje":"dia "+d.dd}</span></span><span class="flex" style=${{alignItems:"center",gap:10,flex:"none"}}><span class="num" style=${{fontSize:18}}>${fmt(d.tp==="parcela"?d.ins:d.total)}</span>${!x.next&&html`<button class="btn s" aria-label=${"Marcar "+d.n+" como paga"} onClick=${()=>pay(d)}>Paguei</button>`}</span></div>`})}
       </div>
       <${EditList} title="Receitas" items=${incomes} save=${setInc} blank=${{n:"Nova receita",v:0,d:15}} sign=${1} day=${true} cur=${cur}/>
       <${EditList} title="Despesas fixas" items=${fixed} save=${setFix} blank=${{n:"Nova despesa",v:0,c:"pessoal"}}/>
