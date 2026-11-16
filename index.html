@@ -79,12 +79,12 @@ const PASS_HASH="cda9d6e4e2520589cfd16b6b336123dbb86fe16ea32d1eeea33e04a44afefb3
 /* ---------- dados iniciais (mesmas chaves de antes: nada do que ja esta salvo se perde) ---------- */
 const iD=[
 {id:1,n:"Cartão Junior - Tatuagem",ins:428,rem:6,dd:20,tp:"parcela"},
-{id:2,n:"Cartão Lucimara",ins:380,rem:3,dd:10,tp:"parcela"},
-{id:3,n:"PC - Junior",ins:333,rem:6,dd:10,tp:"parcela"},
-{id:4,n:"Celular - Junior",ins:683,rem:8,dd:10,tp:"parcela"},
-{id:5,n:"Cartão vó do João",ins:200,rem:4,dd:5,tp:"parcela"},
-{id:6,n:"Cartão tio do João",ins:159,rem:9,dd:15,tp:"parcela"},
-{id:7,n:"Empréstimo Marcelin",ins:300,rem:4,dd:10,tp:"parcela"}];
+{id:2,n:"Cartão Lucimara",ins:380,rem:3,dd:10,tp:"parcela",lp:"2026-11"},
+{id:3,n:"PC - Junior",ins:333,rem:6,dd:10,tp:"parcela",lp:"2026-11"},
+{id:4,n:"Celular - Junior",ins:683,rem:8,dd:10,tp:"parcela",lp:"2026-11"},
+{id:5,n:"Cartão vó do João",ins:200,rem:4,dd:5,tp:"parcela",lp:"2026-11"},
+{id:6,n:"Cartão tio do João",ins:159,rem:9,dd:15,tp:"parcela",lp:"2026-11"},
+{id:7,n:"Empréstimo Marcelin",ins:300,rem:4,dd:10,tp:"parcela",lp:"2026-11"}];
 const BK=["CB 300R 2013","Titan 160 2022","Sahara 300 2024"];
 const fI=[{n:"G7 Pró-labore",v:2000,d:15},{n:"Luquinha (Spotify)",v:15,d:20},{n:"Yago/Giulio",v:20,d:20}];
 const fE=[{n:"Academia",v:135,c:"saude"},{n:"Luta",v:100,c:"saude"},{n:"Cabelo",v:200,c:"pessoal"},{n:"Boldo",v:200,c:"pessoal"}];
@@ -102,10 +102,10 @@ const MF=["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto"
 try{if(!localStorage.getItem("luan_mig1")){const r=localStorage.getItem("luan_incomes");
 localStorage.setItem("luan_incomes",JSON.stringify((r?JSON.parse(r):fI).concat([{n:"iPhone 13 Pro Max (venda)",v:320,d:31,rem:8},{n:"iPhone 11 (venda)",v:125,d:20,rem:4}])));
 localStorage.setItem("luan_mig1","1")}}catch(e){}
-try{if(!localStorage.getItem("luan_mig2")){const r=localStorage.getItem("luan_goal");
+try{if(!localStorage.getItem("luan_mig3")){const r=localStorage.getItem("luan_goal");
 localStorage.setItem("luan_debts",JSON.stringify(iD));
 localStorage.setItem("luan_goal",JSON.stringify(Object.assign({name:"",target:0,monthly:0,deps:[],start:Date.now()},r?JSON.parse(r):{},{bikes:BK})));
-localStorage.setItem("luan_mig2","1")}}catch(e){}
+localStorage.setItem("luan_mig3","1")}}catch(e){}
 /* ---------- utilitarios ---------- */
 const fmt=v=>"R$ "+Math.abs(v||0).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
 const sg=v=>(v<0?"- ":"")+fmt(v);
@@ -279,7 +279,7 @@ function App(){
   const due=act.filter(d=>d.dd>0&&((d.tp==="parcela"&&d.lp!==cur)||(d.tp==="pontual"&&(d.pm||0)===0))).sort((a,b)=>a.dd-b.dd);
   const freeTxt=totD<=0?"Sem dívidas":proj.free===null?"Defina um valor mensal para as dívidas em aberto":"Quitação prevista: "+proj[proj.free].full;
 
-  function backup(){const o={};["luan_exp","luan_debts","luan_incomes","luan_expenses_fixed","luan_goal","luan_cfg","luan_mig1","luan_mig2"].forEach(k=>{const v=localStorage.getItem(k);if(v)o[k]=JSON.parse(v)});
+  function backup(){const o={};["luan_exp","luan_debts","luan_incomes","luan_expenses_fixed","luan_goal","luan_cfg","luan_mig1","luan_mig3"].forEach(k=>{const v=localStorage.getItem(k);if(v)o[k]=JSON.parse(v)});
     const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(o)],{type:"application/json"}));a.download="financeiro-luan-"+dk(Date.now())+".json";a.click()}
   function restore(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);if(!confirm("Substituir os dados atuais pelos do arquivo?"))return;Object.keys(o).filter(k=>k.indexOf("luan_")===0).forEach(k=>localStorage.setItem(k,JSON.stringify(o[k])));location.reload()}catch(x){alert("Arquivo inválido.")}};r.readAsText(f)}
 
