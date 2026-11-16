@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#111315">
-<title>Painel Financeiro - Luan - G7</title>
+<title>Painel Financeiro</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -256,13 +256,14 @@ function App(){
   const totD=act.reduce((s,d)=>s+(d.tp==="parcela"?d.ins*d.rem:(d.total||0)),0);
   const updD=(id,k,v)=>setDebts(debts.map(d=>d.id===id?Object.assign({},d,{[k]:v}):d));
   const delD=id=>{setDebts(debts.filter(d=>d.id!==id));setEd(null)};
+  const pay=d=>d.tp==="parcela"?setDebts(debts.map(x=>x.id===d.id?Object.assign({},x,{rem:x.rem-1,lp:cur}):x)):delD(d.id);
 
   const proj=useMemo(()=>{
     const P=debts.map(d=>Object.assign({},d)),out=[];let acc=0,free=null;
     for(let m=0;m<12;m++){
       let pay=0;
       P.forEach(d=>{if(!(d.rem>0))return;
-        if(d.tp==="parcela"){if(m===0&&d.lp===cur)return;pay+=d.ins;d.rem--}
+        if(d.tp==="parcela"){if(m===0&&d.lp===cur){pay+=d.ins;return}pay+=d.ins;d.rem--}
         else if(d.tp==="pontual"){if(m===(d.pm||0)){pay+=d.total||0;d.rem=0}}
         else if(d.mp>0){const x=Math.min(d.mp,d.total||0);pay+=x;d.total-=x;if(d.total<=0)d.rem=0}});
       const inc=incAt(m),bal=inc-totF-pay;acc+=bal;
@@ -303,7 +304,7 @@ function App(){
 
   const yv=proj.map(p=>p.bal),hi=Math.max(0,...yv),lo=Math.min(0,...yv),rg=(hi-lo)||1,zero=hi/rg*100;
   return html`<div class="wrap">
-    <div class="top"><div><div class="mut sm">${MF[now.getMonth()]} de ${now.getFullYear()}</div><h1>${{inicio:"Olá, Luan",gastos:"Gastos",dividas:"Dívidas",meta:"Rumo à próxima moto",plano:"Planejamento"}[tab]}</h1></div><span class="mut sm">G7</span></div>
+    <div class="top"><div><div class="mut sm">${MF[now.getMonth()]} de ${now.getFullYear()}</div><h1>${{inicio:"Olá, Luan",gastos:"Gastos",dividas:"Dívidas",meta:"Rumo à próxima moto",plano:"Planejamento"}[tab]}</h1></div></div>
 
     ${tab==="inicio"&&html`<div class="stack">
       <div class="card hero">
@@ -316,13 +317,8 @@ function App(){
           <${Donut} parts=${[[totF,"#8B5CF6"],[c0.pay,"#FFD60A"],[Math.max(0,real),"#00E676"]]} label=${fmt(totI)}/>
           <div class="stack" style=${{gap:10,flex:1}}>${[["Fixas",totF,"#8B5CF6"],["Dívidas do mês",c0.pay,"#FFD60A"],["Sobra",Math.max(0,real),"#00E676"]].map(x=>html`<div key=${x[0]}><div class="mut sm"><i class="dot" style=${{background:x[2]}}></i>${x[0]}</div><div class="num" style=${{fontSize:18,fontWeight:600}}>${fmt(x[1])}</div></div>`)}</div>
         </div></div>
-      <button class="card moto" style=${{textAlign:"left"}} onClick=${()=>setTab("meta")}>
-        <div class="row"><span><div class="mut sm">Meta</div><h2>${goal.name||"Minha próxima moto"}</h2></span><span class="num mid amb">${gs.pct.toFixed(0)}%</span></div>
-        <div class="bar" style=${{margin:"10px 0 8px"}}><i style=${{width:Math.min(100,gs.pct)+"%",background:"var(--amb)"}}></i></div>
-        <div class="row sm mut"><span>${goal.target>0?"Faltam "+fmt(gs.left)+(gs.when?" · "+gs.when:""):"Toque para definir o valor da moto"}</span><span>Dia ${gs.day}</span></div>
-      </button>
       <div class="card"><div class="row"><h2>Próximos vencimentos</h2><span class="mut sm">${fmt(totD)} em dívidas</span></div>
-        ${due.length===0?html`<p class="mut sm" style=${{marginTop:8}}>Nada mais a vencer este mês.</p>`:due.map(d=>html`<div key=${d.id} class="item row"><span>${d.n} <span class=${"sm "+(d.dd<day?"bad":"mut")}>${d.dd<day?"venceu dia "+d.dd:d.dd===day?"vence hoje":"dia "+d.dd}</span></span><span class="num" style=${{fontSize:18}}>${fmt(d.tp==="parcela"?d.ins:d.total)}</span></div>`)}
+        ${due.length===0?html`<p class="mut sm" style=${{marginTop:8}}>Tudo pago este mês.</p>`:due.map(d=>html`<div key=${d.id} class="item row"><span>${d.n} <span class=${"sm "+(d.dd<day?"bad":"mut")}>${d.dd<day?"venceu dia "+d.dd:d.dd===day?"vence hoje":"dia "+d.dd}</span></span><span class="flex" style=${{alignItems:"center",gap:10,flex:"none"}}><span class="num" style=${{fontSize:18}}>${fmt(d.tp==="parcela"?d.ins:d.total)}</span><button class="btn s" aria-label=${"Marcar "+d.n+" como paga"} onClick=${()=>pay(d)}>Paguei</button></span></div>`)}
       </div>
       <${EditList} title="Receitas" items=${incomes} save=${setInc} blank=${{n:"Nova receita",v:0,d:15}} sign=${1} day=${true} cur=${cur}/>
       <${EditList} title="Despesas fixas" items=${fixed} save=${setFix} blank=${{n:"Nova despesa",v:0,c:"pessoal"}}/>
@@ -378,7 +374,7 @@ function Login({onLogin}){
     if(hex===PASS_HASH){sessionStorage.setItem("luan_ok","1");onLogin()}else setErr(true)}
   return html`<form onSubmit=${ck} style=${{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
     <div class="stack" style=${{width:"100%",maxWidth:340}}>
-      <div><h1>Painel Financeiro</h1><div class="mut">G7 Soluções Digitais</div></div>
+      <h1>Painel Financeiro</h1>
       <${F} l="Senha"><input class="in" type="password" autoFocus value=${pwd} onChange=${e=>{setPwd(e.target.value);setErr(false)}}/><//>
       ${err&&html`<div class="bad sm" role="alert">Senha incorreta. Tente de novo.</div>`}
       <button class="btn">Entrar</button>
