@@ -78,7 +78,7 @@ input[type=range]{width:100%;accent-color:#fff;height:30px}
 <script>
 "use strict";
 /* atualizacao automatica: se houver versao mais nova publicada, recarrega sozinho */
-(function(){const V="9";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V&&new URLSearchParams(location.search).get("v")!==t)location.replace(location.pathname+"?v="+t)}).catch(()=>{})}
+(function(){const V="10";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V&&new URLSearchParams(location.search).get("v")!==t)location.replace(location.pathname+"?v="+t)}).catch(()=>{})}
 ck();document.addEventListener("visibilitychange",()=>{if(!document.hidden)ck()})})();
 const {useState,useEffect,useMemo}=React;
 const h=(t,p,...c)=>{if(p&&"class" in p){p=Object.assign({},p,{className:p.class});delete p.class}return React.createElement(t,p,...c)};
@@ -94,6 +94,7 @@ const iD=[
 {id:5,n:"Cartão vó do João",ins:200,rem:4,dd:5,tp:"parcela",lp:"2026-11"},
 {id:6,n:"Cartão tio do João",ins:159,rem:9,dd:15,tp:"parcela",lp:"2026-11"},
 {id:7,n:"Empréstimo Marcelin",ins:300,rem:4,dd:10,tp:"parcela",lp:"2026-11"}];
+const WISH=[{id:1,n:"Honda Africa Twin 1100",v:100000},{id:2,n:"BMW R 1250 GS",v:115000},{id:3,n:"Triumph Tiger Sport 660",v:62000},{id:4,n:"Honda Sahara 300",v:30000},{id:5,n:"Honda CRF 250F",v:25000}];
 const BK=["CB 300R 2013","Titan 160 2022","Sahara 300 2024"];
 const fI=[{n:"G7 Pró-labore",v:2000,d:15},{n:"Luquinha (Spotify)",v:15,d:20},{n:"Yago/Giulio",v:20,d:20}];
 const fE=[{n:"Academia",v:135,c:"saude"},{n:"Luta",v:100,c:"saude"},{n:"Cabelo",v:200,c:"pessoal"},{n:"Boldo",v:200,c:"pessoal"}];
@@ -118,6 +119,8 @@ localStorage.setItem("luan_mig3","1")}}catch(e){}
 try{if(!localStorage.getItem("luan_mig4")){const r=JSON.parse(localStorage.getItem("luan_debts")||"null");
 if(r)localStorage.setItem("luan_debts",JSON.stringify(r.map(d=>d.id===1&&d.lp==="2026-11"?Object.assign({},d,{rem:d.rem+1,lp:null}):d)));
 localStorage.setItem("luan_mig4","1")}}catch(e){}
+try{if(!localStorage.getItem("luan_mig5")){const g=JSON.parse(localStorage.getItem("luan_goal")||"null")||{name:"",target:0,monthly:0,deps:[],bikes:BK,start:Date.now()};
+if(!g.wish){g.wish=WISH;localStorage.setItem("luan_goal",JSON.stringify(g))}localStorage.setItem("luan_mig5","1")}}catch(e){}
 /* ---------- utilitarios ---------- */
 const fmt=v=>"R$ "+Math.abs(v||0).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
 const sg=v=>(v<0?"- ":"")+fmt(v);
@@ -201,7 +204,9 @@ function Meta({g,save,spent,surplus}){
   const dep=sign=>{const n=num(v);if(n<=0)return;set("deps",(g.deps||[]).concat([{id:Date.now(),v:sign*n,ts:Date.now(),note:note.trim()}]));setV("");setNote("")};
   function photo(e){const file=e.target.files[0];if(!file)return;const r=new FileReader();
     r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,900/im.width),c=document.createElement("canvas");c.width=im.width*k;c.height=im.height*k;c.getContext("2d").drawImage(im,0,0,c.width,c.height);set("img",c.toDataURL("image/jpeg",.78))};im.src=r.result};r.readAsDataURL(file)}
-  const bikes=g.bikes||BK;
+  const bikes=g.bikes||BK,wish=g.wish||[];
+  const upW=(id,k,val)=>set("wish",wish.map(x=>x.id===id?Object.assign({},x,{[k]:val}):x));
+  const tempo=m=>m>=24?(m/12).toFixed(1).replace(".",",")+" anos":m+(m===1?" mês":" meses");
   return html`<div class="stack">
     <div class="card">
       <input class="in" style=${{border:0,padding:0,minHeight:0,background:"none",fontFamily:"Outfit",fontSize:26,fontWeight:700}} aria-label="Nome da moto" placeholder="Qual moto você quer?" value=${g.name||""} onChange=${e=>set("name",e.target.value)}/>
@@ -227,6 +232,17 @@ function Meta({g,save,spent,surplus}){
       ${(g.deps||[]).slice().reverse().slice(0,8).map(x=>html`<div key=${x.id} class="item row"><span>${dk(x.ts).slice(8)}/${dk(x.ts).slice(5,7)} <span class="mut sm">${x.note}</span></span>
         <span class="flex" style=${{alignItems:"center"}}><span class=${"num "+(x.v<0?"bad":"ok")} style=${{fontSize:18}}>${x.v<0?"- ":"+ "}${fmt(x.v)}</span>
         <button class="mut" aria-label="Excluir lançamento" style=${{padding:"6px 10px"}} onClick=${()=>set("deps",g.deps.filter(y=>y.id!==x.id))}>✕</button></span></div>`)}
+    </div>
+    <div class="card">
+      <div class="row"><h2>Motos em mente</h2><button class="btn gh s" onClick=${()=>set("wish",wish.concat([{id:Date.now(),n:"",v:0}]))}>Adicionar</button></div>
+      ${wish.map(w=>{const on=w.n&&g.name===w.n&&g.target===w.v,m=g.monthly>0&&w.v>s.saved?Math.ceil((w.v-s.saved)/g.monthly):null;
+        return html`<div key=${w.id} class="item">
+          <div class="flex"><input class="in" style=${{flex:2,minWidth:0}} aria-label="Modelo" placeholder="modelo" value=${w.n} onChange=${e=>upW(w.id,"n",e.target.value)}/>
+          <input class="in" style=${{flex:1,minWidth:0}} type="number" inputMode="decimal" aria-label="Valor em reais" placeholder="valor" value=${w.v||""} onChange=${e=>upW(w.id,"v",num(e.target.value))}/></div>
+          <div class="row" style=${{marginTop:8}}><span class="mut sm">${fmt(w.v)}${m?" · "+tempo(m):""}</span>
+          <span class="flex" style=${{alignItems:"center"}}>${on?html`<span class="pill pos">meta atual</span>`:html`<button class="btn s" onClick=${()=>save(Object.assign({},g,{name:w.n,target:w.v}))}>Definir como meta</button>`}
+          <button class="mut" aria-label=${"Remover "+w.n} style=${{padding:"6px 10px"}} onClick=${()=>set("wish",wish.filter(x=>x.id!==w.id))}>✕</button></span></div></div>`})}
+      <p class="mut sm" style=${{marginTop:10}}>${g.monthly>0?"O tempo considera seu aporte de "+fmt(g.monthly)+" por mês.":"Defina o aporte por mês no Plano para ver em quanto tempo cada uma sai."} Os valores são referências aproximadas; ajuste pelo preço real.</p>
     </div>
     <div class="card stack" style=${{gap:10}}>
       <h2>Plano</h2>
@@ -254,7 +270,7 @@ function App(){
   const [debts,setDebts]=useLS("luan_debts",iD);
   const [incomes,setInc]=useLS("luan_incomes",fI);
   const [fixed,setFix]=useLS("luan_expenses_fixed",fE);
-  const [goal,setGoal]=useLS("luan_goal",{name:"",target:0,monthly:0,deps:[],bikes:BK,start:Date.now()});
+  const [goal,setGoal]=useLS("luan_goal",{name:"",target:0,monthly:0,deps:[],bikes:BK,wish:WISH,start:Date.now()});
   const [cfg,setCfg]=useLS("luan_cfg",{extra:0,sav:300});
   const [ed,setEd]=useState(null);
   const [sel,setSel]=useState(0);
@@ -296,7 +312,7 @@ function App(){
   due.sort((a,b)=>(a.next-b.next)||(a.d.dd-b.d.dd));
   const freeTxt=totD<=0?"Sem dívidas":proj.free===null?"Defina um valor mensal para as dívidas em aberto":"Quitação prevista: "+proj[proj.free].full;
 
-  function backup(){const o={};["luan_exp","luan_debts","luan_incomes","luan_expenses_fixed","luan_goal","luan_cfg","luan_mig1","luan_mig3","luan_mig4"].forEach(k=>{const v=localStorage.getItem(k);if(v)o[k]=JSON.parse(v)});
+  function backup(){const o={};["luan_exp","luan_debts","luan_incomes","luan_expenses_fixed","luan_goal","luan_cfg","luan_mig1","luan_mig3","luan_mig4","luan_mig5"].forEach(k=>{const v=localStorage.getItem(k);if(v)o[k]=JSON.parse(v)});
     const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(o)],{type:"application/json"}));a.download="financeiro-luan-"+dk(Date.now())+".json";a.click()}
   function restore(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);if(!confirm("Substituir os dados atuais pelos do arquivo?"))return;Object.keys(o).filter(k=>k.indexOf("luan_")===0).forEach(k=>localStorage.setItem(k,JSON.stringify(o[k])));location.reload()}catch(x){alert("Arquivo inválido.")}};r.readAsText(f)}
 
@@ -379,7 +395,7 @@ function App(){
         <label class="btn gh" style=${{flex:1,textAlign:"center",cursor:"pointer"}}>Restaurar backup<input type="file" accept="application/json" hidden onChange=${restore}/></label></div></div>
     </div>`}
 
-    <p class="mut sm" style=${{textAlign:"center",marginTop:24}}>versão 9</p>
+    <p class="mut sm" style=${{textAlign:"center",marginTop:24}}>versão 10</p>
     <nav><div>${[["inicio","Início"],["dividas","Dívidas"],["meta","Meta"],["plano","Planejar"]].map(t=>html`<button key=${t[0]} class=${tab===t[0]?"on":""} aria-current=${tab===t[0]?"page":null} onClick=${()=>setTab(t[0])}><svg viewBox="0 0 24 24"><path d=${ICON[t[0]]}/></svg><span>${t[1]}</span></button>`)}</div></nav>
   </div>`;
 }
