@@ -78,7 +78,7 @@ input[type=range]{width:100%;accent-color:#fff;height:30px}
 <script>
 "use strict";
 /* atualizacao automatica: se houver versao mais nova publicada, recarrega sozinho */
-(function(){const V="8";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V&&new URLSearchParams(location.search).get("v")!==t)location.replace(location.pathname+"?v="+t)}).catch(()=>{})}
+(function(){const V="9";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V&&new URLSearchParams(location.search).get("v")!==t)location.replace(location.pathname+"?v="+t)}).catch(()=>{})}
 ck();document.addEventListener("visibilitychange",()=>{if(!document.hidden)ck()})})();
 const {useState,useEffect,useMemo}=React;
 const h=(t,p,...c)=>{if(p&&"class" in p){p=Object.assign({},p,{className:p.class});delete p.class}return React.createElement(t,p,...c)};
@@ -379,6 +379,7 @@ function App(){
         <label class="btn gh" style=${{flex:1,textAlign:"center",cursor:"pointer"}}>Restaurar backup<input type="file" accept="application/json" hidden onChange=${restore}/></label></div></div>
     </div>`}
 
+    <p class="mut sm" style=${{textAlign:"center",marginTop:24}}>versão 9</p>
     <nav><div>${[["inicio","Início"],["dividas","Dívidas"],["meta","Meta"],["plano","Planejar"]].map(t=>html`<button key=${t[0]} class=${tab===t[0]?"on":""} aria-current=${tab===t[0]?"page":null} onClick=${()=>setTab(t[0])}><svg viewBox="0 0 24 24"><path d=${ICON[t[0]]}/></svg><span>${t[1]}</span></button>`)}</div></nav>
   </div>`;
 }
