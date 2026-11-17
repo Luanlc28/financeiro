@@ -116,6 +116,7 @@ h2{position:relative;padding-left:12px}h2::before{content:"";position:absolute;l
 nav button.on svg{filter:drop-shadow(0 0 6px rgba(229,37,47,.7))}
 .num{white-space:nowrap}
 button.pill.on{background:#E5252F;color:#fff;border-color:#E5252F}
+.card .flex>button.pill{font-size:12px;padding:5px 9px;white-space:nowrap}
 @keyframes fly{to{transform:translate(var(--x),var(--y)) rotate(var(--r));opacity:0}}
 @media (prefers-reduced-motion:reduce){.boom{display:none}}
 </style>
@@ -128,7 +129,7 @@ button.pill.on{background:#E5252F;color:#fff;border-color:#E5252F}
 <script>
 "use strict";
 /* atualizacao automatica: se houver versao mais nova publicada, recarrega sozinho */
-(function(){const V="28";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V){const k="upd_"+t,n=+(sessionStorage.getItem(k)||0);if(n<3){sessionStorage.setItem(k,n+1);location.replace(location.pathname+"?v="+t+"&r="+Date.now())}}}).catch(()=>{})}
+(function(){const V="29";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V){const k="upd_"+t,n=+(sessionStorage.getItem(k)||0);if(n<3){sessionStorage.setItem(k,n+1);location.replace(location.pathname+"?v="+t+"&r="+Date.now())}}}).catch(()=>{})}
 ck();document.addEventListener("visibilitychange",()=>{if(!document.hidden)ck()})})();
 const {useState,useEffect,useMemo}=React;
 const h=(t,p,...c)=>{if(p&&"class" in p){p=Object.assign({},p,{className:p.class});delete p.class}return React.createElement(t,p,...c)};
@@ -144,7 +145,7 @@ const iD=[
 {id:5,n:"Cartão vó do João",ins:200,rem:4,dd:5,tp:"parcela",lp:"2026-11"},
 {id:6,n:"Cartão tio do João",ins:159,rem:9,dd:15,tp:"parcela",lp:"2026-11"},
 {id:7,n:"Empréstimo Marcelin",ins:300,rem:4,dd:10,tp:"parcela",lp:"2026-11"}];
-const WISH=[{id:1,n:"Honda Africa Twin 1100",v:112000},{id:2,n:"BMW R 1250 GS",v:95000},{id:3,n:"Triumph Tiger Sport 660",v:62000},{id:4,n:"Honda Sahara 300",v:30000},{id:5,n:"Honda CRF 250F",v:25000}];
+const WISH=[{id:1,n:"Honda Africa Twin 1100",v:112000},{id:2,n:"BMW R 1250 GS",v:95000},{id:3,n:"Triumph Tiger Sport 660",v:62000},{id:4,n:"Honda XRE 300",v:24000},{id:16,n:"Honda Sahara 300",v:33000},{id:5,n:"Honda CRF 250F",v:25000}];
 const BK=["CB 300R 2013","Titan 160 2022","Sahara 300 2024"];
 const fI=[{n:"G7 Pró-labore",v:2000,d:15},{n:"Luquinha (Spotify)",v:15,d:20},{n:"Yago/Giulio",v:20,d:20}];
 const fE=[{n:"Academia",v:135,c:"saude"},{n:"Luta",v:100,c:"saude"},{n:"Cabelo",v:200,c:"pessoal"},{n:"Boldo",v:200,c:"pessoal"}];
@@ -176,6 +177,10 @@ try{if(!localStorage.getItem("luan_mig6")){const g=JSON.parse(localStorage.getIt
 if(g){const w=g.wish||[];WISH2.forEach(x=>{if(!w.some(y=>y.id===x.id))w.push(x)});g.wish=w;localStorage.setItem("luan_goal",JSON.stringify(g))}localStorage.setItem("luan_mig6","1")}}catch(e){}
 try{if(!localStorage.getItem("luan_mig7")){const g=JSON.parse(localStorage.getItem("luan_goal")||"null");const U={1:[100000,112000],2:[115000,95000],8:[160000,140000],11:[110000,95000],12:[900000,1000000]};
 if(g&&g.wish){g.wish=g.wish.map(w=>U[w.id]&&w.v===U[w.id][0]?Object.assign({},w,{v:U[w.id][1]}):w);localStorage.setItem("luan_goal",JSON.stringify(g))}localStorage.setItem("luan_mig7","1")}}catch(e){}
+try{if(!localStorage.getItem("luan_mig8")){const g=JSON.parse(localStorage.getItem("luan_goal")||"null");
+if(g&&g.wish){let w=g.wish.map(x=>x.id===4&&x.n==="Honda Sahara 300"?Object.assign({},x,{n:"Honda XRE 300",v:x.v===30000?24000:x.v}):x);
+w=w.filter(x=>!(x.id!==15&&!x.img&&/golf/i.test(x.n||"")));if(!w.some(x=>x.id===16))w.push({id:16,n:"Honda Sahara 300",v:33000,t:"moto"});
+g.wish=w;localStorage.setItem("luan_goal",JSON.stringify(g))}localStorage.setItem("luan_mig8","1")}}catch(e){}
 /* ---------- utilitarios ---------- */
 const fmt=v=>"R$ "+Math.abs(v||0).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
 const sg=v=>(v<0?"- ":"")+fmt(v);
@@ -299,12 +304,12 @@ function Meta({g,save}){
       <div class="row"><h2>Seus sonhos</h2><button class="btn gh s" onClick=${()=>setEdit(!edit)}>${edit?"Concluir":"Editar"}</button></div>
       <p class="mut sm" style=${{margin:"4px 0 14px"}}>Sem pressa e sem prazo. Elas ficam aqui só para lembrar para onde a estrada vai.</p>
       ${edit?html`<div>${wish.map(w=>html`<div key=${w.id} class="flex" style=${{marginBottom:8}}><input class="in" style=${{flex:2,minWidth:0}} aria-label="Modelo" placeholder="modelo" value=${w.n} onChange=${e=>upW(w.id,"n",e.target.value)}/><input class="in" style=${{flex:1,minWidth:0}} type="number" inputMode="decimal" aria-label="Valor em reais" placeholder="valor" value=${w.v||""} onChange=${e=>upW(w.id,"v",num(e.target.value))}/><select class="in" aria-label="Tipo" style=${{flex:"none",width:104,padding:"0 6px"}} value=${w.t||"moto"} onChange=${e=>upW(w.id,"t",e.target.value)}><option value="moto">🏍️ Moto</option><option value="carro">🚗 Carro</option><option value="outro">⭐ Outro</option></select><button class="btn gh s" aria-label=${"Foto de "+w.n} onClick=${()=>pickImg(900,d=>upW(w.id,"img",d))}>${w.img?"✓ Foto":"📷 Foto"}</button><button class="mut" aria-label=${"Remover "+w.n} style=${{padding:"6px 8px"}} onClick=${()=>set("wish",wish.filter(x=>x.id!==w.id))}>✕</button></div>`)}<button class="btn gh s" onClick=${()=>set("wish",wish.concat([{id:Date.now(),n:"",v:0}]))}>Adicionar sonho</button></div>`
-      :html`<div><div class="flex wrapf" style=${{marginBottom:12}}>${[["","Todos"],["moto","🏍️ Motos"],["carro","🚗 Carros"],["outro","⭐ Outros"]].filter(([k])=>!k||wish.some(w=>(w.t||"moto")===k)).map(([k,l])=>html`<button key=${k} class=${"pill"+(ft===k?" on":"")} onClick=${()=>setFt(k)}>${l}</button>`)}</div><div class="scroll">${wish.filter(w=>!ft||(w.t||"moto")===ft).slice().sort((a,b)=>a.v-b.v).map(w=>html`<div key=${w.id} class="bk">${w.img||(w.id<=15&&w.id!==5)?html`<img src=${w.img||"w"+w.id+".jpg"} alt=${w.n} loading="lazy"/>`:html`<div class="ph">${{carro:"🚗",outro:"⭐"}[w.t]||"🏍️"}</div>`}<div style=${{fontWeight:600}}>${w.n}</div><span class="mut">${w.v>0&&saved>=w.v?"✓ alcançada":short(w.v)}</span>${mkt&&mkt.itens&&mkt.itens[w.id]&&Math.abs(mkt.itens[w.id]-w.v)>=1000&&html`<button class="mut" style=${{fontSize:12,textAlign:"left",padding:"2px 0",textDecoration:"underline"}} onClick=${()=>upW(w.id,"v",mkt.itens[w.id])}>Mercado (${mkt.mes}): ${fmt(mkt.itens[w.id])} · usar</button>`}${w.v>0&&saved<w.v&&html`<div class="bar" style=${{height:6,marginTop:6}}><i style=${{width:Math.max(2,saved/w.v*100)+"%",background:"#E5252F"}}></i></div><span class="mut" style=${{fontSize:12}}>${Math.floor(saved/w.v*100)}% com o que você já guardou</span>`}</div>`)}</div></div>`}
+      :html`<div><div class="flex" style=${{marginBottom:12,gap:5,flexWrap:"nowrap"}}>${[["","Todos"],["moto","🏍️ Motos"],["carro","🚗 Carros"],["outro","⭐ Outros"]].filter(([k])=>!k||wish.some(w=>(w.t||"moto")===k)).map(([k,l])=>html`<button key=${k} class=${"pill"+(ft===k?" on":"")} onClick=${()=>setFt(k)}>${l}</button>`)}</div><div class="scroll">${wish.filter(w=>!ft||(w.t||"moto")===ft).slice().sort((a,b)=>a.v-b.v).map(w=>html`<div key=${w.id} class="bk">${w.img||(w.id<=16&&w.id!==5)?html`<img src=${w.img||"w"+w.id+".jpg"} alt=${w.n} loading="lazy"/>`:html`<div class="ph">${{carro:"🚗",outro:"⭐"}[w.t]||"🏍️"}</div>`}<div style=${{fontWeight:600}}>${w.n}</div><span class="mut">${w.v>0&&saved>=w.v?"✓ alcançada":short(w.v)}</span>${mkt&&mkt.itens&&mkt.itens[w.id]&&Math.abs(mkt.itens[w.id]-w.v)>=1000&&html`<button class="mut" style=${{fontSize:12,textAlign:"left",padding:"2px 0",textDecoration:"underline"}} onClick=${()=>upW(w.id,"v",mkt.itens[w.id])}>Mercado (${mkt.mes}): ${fmt(mkt.itens[w.id])} · usar</button>`}<button class="btn gh s" style=${{marginTop:6,width:"100%"}} onClick=${()=>{if(confirm("Conquistou "+w.n+"? Ele vai para a garagem."))save(Object.assign({},g,{wish:wish.filter(x=>x.id!==w.id),got:(g.got||[]).concat([{n:w.n,img:w.img||((w.id<=16&&w.id!==5)?"w"+w.id+".jpg":""),t:w.t||"moto",d:Date.now()}])}))}}>🏁 Conquistei</button>${w.v>0&&saved<w.v&&html`<div class="bar" style=${{height:6,marginTop:6}}><i style=${{width:Math.max(2,saved/w.v*100)+"%",background:"#E5252F"}}></i></div><span class="mut" style=${{fontSize:12}}>${Math.floor(saved/w.v*100)}% com o que você já guardou</span>`}</div>`)}</div></div>`}
       <p class="mut" style=${{fontSize:11,marginTop:10}}>Foto da Tiger 660: Lamb Chop Rides (CC BY 3.0), via Wikimedia Commons.</p>
     </div>
     <div class="card">
       <h2>Já passaram pela garagem</h2>
-      <div class="scroll" style=${{marginTop:14}}>${[0,1,2].map(i=>html`<div key=${i} class="bk"><img src=${"m"+(i+1)+".jpg"} alt=${bikes[i]||""} loading="lazy"/><div style=${{fontWeight:600}}>${bikes[i]}</div><span class="mut">${i+1}ª moto</span></div>`)}</div>
+      <div class="scroll" style=${{marginTop:14}}>${[0,1,2].map(i=>html`<div key=${i} class="bk"><img src=${"m"+(i+1)+".jpg"} alt=${bikes[i]||""} loading="lazy"/><div style=${{fontWeight:600}}>${bikes[i]}</div><span class="mut">${i+1}ª moto</span></div>`)}${(g.got||[]).map((x,i)=>html`<div key=${"g"+i} class="bk">${x.img?html`<img src=${x.img} alt=${x.n} loading="lazy"/>`:html`<div class="ph">${{carro:"🚗",outro:"⭐"}[x.t]||"🏍️"}</div>`}<div style=${{fontWeight:600}}>${x.n}</div><span class="ok">🏁 conquistada</span></div>`)}</div>
     </div>
   </div>`;
 }
@@ -363,7 +368,7 @@ function App(){
   due.sort((a,b)=>(a.next-b.next)||(a.d.dd-b.d.dd));
   const freeTxt=totD<=0?"Sem dívidas":proj.free===null?"Defina um valor mensal para as dívidas em aberto":"Quitação prevista: "+proj[proj.free].full;
 
-  function backup(){const o={};["luan_exp","luan_debts","luan_incomes","luan_expenses_fixed","luan_goal","luan_cfg","luan_mig1","luan_mig3","luan_mig4","luan_mig5","luan_mig6","luan_mig7"].forEach(k=>{const v=localStorage.getItem(k);if(v)o[k]=JSON.parse(v)});
+  function backup(){const o={};["luan_exp","luan_debts","luan_incomes","luan_expenses_fixed","luan_goal","luan_cfg","luan_mig1","luan_mig3","luan_mig4","luan_mig5","luan_mig6","luan_mig7","luan_mig8"].forEach(k=>{const v=localStorage.getItem(k);if(v)o[k]=JSON.parse(v)});
     const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(o)],{type:"application/json"}));a.download="financeiro-luan-"+dk(Date.now())+".json";a.click()}
   function restore(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);if(!confirm("Substituir os dados atuais pelos do arquivo?"))return;Object.keys(o).filter(k=>k.indexOf("luan_")===0).forEach(k=>localStorage.setItem(k,JSON.stringify(o[k])));location.reload()}catch(x){alert("Arquivo inválido.")}};r.readAsText(f)}
 
