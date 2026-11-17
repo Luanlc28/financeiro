@@ -143,7 +143,7 @@ body:has(.lg)::before{display:none}
 .fidb{width:64px;height:64px;border-radius:50%;background:rgba(229,37,47,.92);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(229,37,47,.45)}
 .trip{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px}.trip label{font-size:11px;color:var(--mut)}.trip .in{min-height:38px;padding:6px 8px;font-size:14px;margin-top:2px}
 /* ui-ux-pro-max: alvos de toque >=44px sem mudar o visual, textos minimos, movimento reduzido */
-button.pill{position:relative}button.pill::after,.flag::after,.lgic::after{content:"";position:absolute;inset:-8px}
+button.pill,.lgic{position:relative}button.pill::after,.flag::after,.lgic::after{content:"";position:absolute;inset:-8px}
 .top{position:relative}.top .btn.s{min-height:44px;min-width:44px}
 nav button{font-size:12px}
 @media (prefers-reduced-motion:reduce){.lgtrack,.needle,.bar i{transition:none!important}}
@@ -159,7 +159,7 @@ nav button{font-size:12px}
 <script>
 "use strict";
 /* atualizacao automatica: se houver versao mais nova publicada, recarrega sozinho */
-const APPV="57";
+const APPV="58";
 function chkVer(){return fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():"").then(t=>{t=t.trim();if(t&&t!==APPV){const k="upd_"+t,n=+(sessionStorage.getItem(k)||0);if(n<3){sessionStorage.setItem(k,n+1);location.replace(location.pathname+"?v="+t+"&r="+Date.now());return true}}return false}).catch(()=>false)}
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)chkVer()});
 const {useState,useEffect,useMemo}=React;
