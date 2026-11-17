@@ -132,7 +132,7 @@ button.pill.on{background:#E5252F;color:#fff;border-color:#E5252F}
 <script>
 "use strict";
 /* atualizacao automatica: se houver versao mais nova publicada, recarrega sozinho */
-(function(){const V="35";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V){const k="upd_"+t,n=+(sessionStorage.getItem(k)||0);if(n<3){sessionStorage.setItem(k,n+1);location.replace(location.pathname+"?v="+t+"&r="+Date.now())}}}).catch(()=>{})}
+(function(){const V="36";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V){const k="upd_"+t,n=+(sessionStorage.getItem(k)||0);if(n<3){sessionStorage.setItem(k,n+1);location.replace(location.pathname+"?v="+t+"&r="+Date.now())}}}).catch(()=>{})}
 ck();document.addEventListener("visibilitychange",()=>{if(!document.hidden)ck()})})();
 const {useState,useEffect,useMemo}=React;
 const h=(t,p,...c)=>{if(p&&"class" in p){p=Object.assign({},p,{className:p.class});delete p.class}return React.createElement(t,p,...c)};
@@ -400,7 +400,6 @@ function App(){
     <div class="top"><div><div class="brand" style=${{marginBottom:14,display:"flex",alignItems:"center",gap:8}}><svg viewBox="80 80 300 300" width="22" height="22" aria-hidden="true"><path d="M107 149 A180 180 0 0 1 365 149" fill="none" stroke="#A6ADB6" stroke-width="17" stroke-linecap="round" stroke-dasharray="45 13"/><path d="M305 90 A180 180 0 0 1 365 149" fill="none" stroke="#E5252F" stroke-width="17" stroke-linecap="round"/><path d="M92 333 L145 174 L229 266 L307 174 L365 333 L309 333 L287 258 L230 326 L169 257 L148 333 Z" fill="#fff"/><path d="M182 359 L327 359 L294 373 L160 373 Z" fill="#E5252F"/></svg><span>MARCHA</span><b style=${{color:"#F5F6F8",fontWeight:400,fontStyle:"normal",fontFamily:"Inter"}}>by LC<span style=${{color:"#E5252F",fontWeight:800}}>28</span></b></div><div class="mut sm">${MF[now.getMonth()]} de ${now.getFullYear()}</div><h1>${{inicio:"Olá, Luan",gastos:"Gastos",dividas:"Dívidas",meta:"Seu cofre",plano:"Planejamento"}[tab]}</h1></div><div class="flex" style=${{alignSelf:"flex-start"}}><button class="btn gh s" aria-label="Atualizar app" onClick=${()=>location.replace(location.pathname+"?v="+Date.now())}>↻</button><button class="btn gh s" onClick=${()=>{sessionStorage.removeItem("luan_ok");location.reload()}}>Sair</button></div></div>
 
     ${tab==="inicio"&&html`<div class="stack">
-      ${Date.now()-bk>6048e5&&html`<div class="bkwarn"><span>💾 ${bk?"Faz "+Math.floor((Date.now()-bk)/864e5)+" dias sem backup":"Você ainda não fez backup"}</span><button class="btn s" onClick=${backup}>Fazer agora</button></div>`}
       <p class="quote">“${FR[Math.floor((Date.now()-new Date(new Date().getFullYear(),0,0))/864e5+15*99-321)%FR.length]}”</p>
       <div class=${"card hero"+(real<0?" neg":"")}>
         <div class="row"><span class="sm">Sobra real deste mês</span><span class=${"pill "+(real<0?"neg":"pos")}>${real<0?"no vermelho":"no azul"}</span></div>
@@ -453,13 +452,13 @@ function App(){
         <input type="range" aria-label="Meta de economia mensal" min="0" max="2000" step="50" value=${cfg.sav||0} onChange=${e=>setCfg({...cfg,sav:+e.target.value})}/>
         <p class=${"sm "+(real>=cfg.sav?"ok":"bad")}>${real>=cfg.sav?"Dá para cumprir este mês: a sobra é "+fmt(real)+".":"Faltam "+fmt(cfg.sav-Math.max(0,real))+" para cumprir este mês."}</p></div>
       <${FaceCard}/>
-      <div class="card stack" style=${{gap:10}}><h2>Backup</h2><p class="mut sm">Seus dados ficam salvos só neste aparelho. Baixe um backup de vez em quando.</p>
-        <div class="flex"><button class="btn gh" style=${{flex:1}} onClick=${backup}>Baixar backup</button>
-        <label class="btn gh" style=${{flex:1,textAlign:"center",cursor:"pointer"}}>Restaurar backup<input type="file" accept="application/json" hidden onChange=${restore}/></label></div></div>
+      <div class="card stack" style=${{gap:10}}><div class="row"><h2>Backup</h2><span class=${"sm "+(Date.now()-bk>6048e5?"bad":"mut")}>${bk?(Math.floor((Date.now()-bk)/864e5)||"hoje")+(Math.floor((Date.now()-bk)/864e5)?"d atrás":""):"nunca feito"}</span></div>
+        <div class="flex"><button class="btn gh" style=${{flex:1}} onClick=${backup}>Salvar</button>
+        <label class="btn gh" style=${{flex:1,textAlign:"center",cursor:"pointer"}}>Restaurar<input type="file" accept="application/json" hidden onChange=${restore}/></label></div></div>
     </div>`}
 
     <footer class="foot"><span>criado por</span><svg viewBox="80 80 300 300" width="14" height="14" aria-hidden="true"><path d="M107 149 A180 180 0 0 1 365 149" fill="none" stroke="#A6ADB6" stroke-width="17" stroke-linecap="round" stroke-dasharray="45 13"/><path d="M305 90 A180 180 0 0 1 365 149" fill="none" stroke="#E5252F" stroke-width="17" stroke-linecap="round"/><path d="M92 333 L145 174 L229 266 L307 174 L365 333 L309 333 L287 258 L230 326 L169 257 L148 333 Z" fill="#fff"/><path d="M182 359 L327 359 L294 373 L160 373 Z" fill="#E5252F"/></svg><b>MARCHA</b><span>by LC<i>28</i></span></footer>
-    <nav><div>${[["inicio","Início"],["dividas","Dívidas"],["meta","Cofre"],["plano","Planejar"]].map(t=>html`<button key=${t[0]} class=${tab===t[0]?"on":""} aria-current=${tab===t[0]?"page":null} onClick=${()=>setTab(t[0])}><svg viewBox="0 0 24 24"><path d=${ICON[t[0]]}/></svg><span>${t[1]}</span></button>`)}</div></nav>
+    <nav><div>${[["inicio","Início"],["dividas","Dívidas"],["meta","Cofre"],["plano","Planejar"]].map(t=>html`<button key=${t[0]} class=${tab===t[0]?"on":""} aria-current=${tab===t[0]?"page":null} onClick=${()=>setTab(t[0])}><span style=${{position:"relative",display:"flex"}}><svg viewBox="0 0 24 24"><path d=${ICON[t[0]]}/></svg>${t[0]==="plano"&&Date.now()-bk>6048e5&&html`<i style=${{position:"absolute",top:-1,right:-3,width:7,height:7,borderRadius:"50%",background:"#E5252F"}}></i>`}</span><span>${t[1]}</span></button>`)}</div></nav>
   </div>`;
 }
 
