@@ -127,7 +127,7 @@ nav button.on svg{filter:drop-shadow(0 0 6px rgba(229,37,47,.7))}
 <script>
 "use strict";
 /* atualizacao automatica: se houver versao mais nova publicada, recarrega sozinho */
-(function(){const V="18";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V&&new URLSearchParams(location.search).get("v")!==t)location.replace(location.pathname+"?v="+t)}).catch(()=>{})}
+(function(){const V="19";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V&&new URLSearchParams(location.search).get("v")!==t)location.replace(location.pathname+"?v="+t)}).catch(()=>{})}
 ck();document.addEventListener("visibilitychange",()=>{if(!document.hidden)ck()})})();
 const {useState,useEffect,useMemo}=React;
 const h=(t,p,...c)=>{if(p&&"class" in p){p=Object.assign({},p,{className:p.class});delete p.class}return React.createElement(t,p,...c)};
@@ -459,6 +459,7 @@ function FaceCard(){const [on,setOn]=useState(()=>!!localStorage.getItem(FID));c
     ${msg&&html`<div class="bad sm" role="alert">${msg}</div>`}</div>`}
 function Login({onLogin}){
   const [pwd,setPwd]=useState("");const [err,setErr]=useState(false);
+  useEffect(()=>{if(fidOk()&&localStorage.getItem(FID))fidLogin().then(()=>{sessionStorage.setItem("luan_ok","1");onLogin()}).catch(()=>{})},[]);
   async function ck(e){e.preventDefault();
     const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(pwd));
     const hex=Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,"0")).join("");
