@@ -98,6 +98,22 @@ label.f .in{color:#F5F6F8}
 .brand{font-weight:800;font-style:italic;letter-spacing:-.02em;font-size:20px}.brand b{color:#E5252F;font-size:12px;font-style:italic;margin-left:6px}
 .boom{position:fixed;left:50%;bottom:45%;pointer-events:none;z-index:9}
 .boom span{position:absolute;font-size:30px;animation:fly 1.1s ease-out forwards}
+.foot{text-align:center;margin-top:36px;padding:26px 0 8px;border-top:1px solid var(--line)}
+.wm{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:10px}
+.wmt{font-family:Sora;font-style:italic;font-weight:800;font-size:34px;letter-spacing:-.04em;line-height:1}
+.wms{height:5px;margin:4px 0 0 4px;background:#E5252F;transform:skewX(-30deg);width:70%}
+.wmb{font-size:15px;margin:2px 0 0 70px}.wmb span{color:#E5252F;font-weight:800}
+/* mais vida */
+.card{background:linear-gradient(160deg,#181D21,#121518);box-shadow:0 10px 30px rgba(0,0,0,.35)}
+h2{position:relative;padding-left:12px}h2::before{content:"";position:absolute;left:0;top:.2em;bottom:.2em;width:4px;border-radius:2px;background:#E5252F;transform:skewX(-12deg)}
+.top h1{background:linear-gradient(90deg,#fff,#C9CED4);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero,.g1{position:relative;overflow:hidden}
+.hero::after,.g1::after{content:"";position:absolute;right:-20px;top:0;bottom:0;width:140px;background:repeating-linear-gradient(115deg,transparent 0 14px,rgba(255,255,255,.06) 14px 28px);pointer-events:none}
+.hero.neg{background:linear-gradient(135deg,#E5252F,#7A0F16)}.hero.neg .big,.hero.neg .sm{color:#fff}.hero.neg .pill.neg{background:rgba(0,0,0,.28);color:#fff}
+.hero:not(.neg){background:linear-gradient(135deg,#16A34A,#0B4D25)}.hero:not(.neg) .big,.hero:not(.neg) .sm{color:#fff}
+.item{transition:background .2s}
+.btn{box-shadow:0 6px 18px rgba(229,37,47,.35)}
+nav button.on svg{filter:drop-shadow(0 0 6px rgba(229,37,47,.7))}
 @keyframes fly{to{transform:translate(var(--x),var(--y)) rotate(var(--r));opacity:0}}
 @media (prefers-reduced-motion:reduce){.boom{display:none}}
 </style>
@@ -110,7 +126,7 @@ label.f .in{color:#F5F6F8}
 <script>
 "use strict";
 /* atualizacao automatica: se houver versao mais nova publicada, recarrega sozinho */
-(function(){const V="15";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V&&new URLSearchParams(location.search).get("v")!==t)location.replace(location.pathname+"?v="+t)}).catch(()=>{})}
+(function(){const V="16";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V&&new URLSearchParams(location.search).get("v")!==t)location.replace(location.pathname+"?v="+t)}).catch(()=>{})}
 ck();document.addEventListener("visibilitychange",()=>{if(!document.hidden)ck()})})();
 const {useState,useEffect,useMemo}=React;
 const h=(t,p,...c)=>{if(p&&"class" in p){p=Object.assign({},p,{className:p.class});delete p.class}return React.createElement(t,p,...c)};
@@ -372,7 +388,7 @@ function App(){
       <div class="card"><h2>Para onde vai sua receita</h2>
         <div class="flex" style=${{alignItems:"center",gap:18,marginTop:14}}>
           <${Donut} parts=${[[totF,"#8B5CF6"],[c0.pay,"#FFD60A"],[Math.max(0,real),"#00E676"]]} label=${fmt(totI)}/>
-          <div class="stack" style=${{gap:10,flex:1}}>${[["Fixas",totF,"#8B5CF6"],["Dívidas do mês",c0.pay,"#FFD60A"],["Sobra",Math.max(0,real),"#00E676"]].map(x=>html`<div key=${x[0]}><div class="mut sm"><i class="dot" style=${{background:x[2]}}></i>${x[0]}</div><div class="num" style=${{fontSize:18,fontWeight:600}}>${fmt(x[1])}</div></div>`)}</div>
+          <div class="stack" style=${{gap:10,flex:1}}>${[["Fixas",totF,"#3B6BFF"],["Dívidas do mês",c0.pay,"#E5252F"],["Sobra",Math.max(0,real),"#22C55E"]].map(x=>html`<div key=${x[0]}><div class="mut sm"><i class="dot" style=${{background:x[2]}}></i>${x[0]}</div><div class="num" style=${{fontSize:18,fontWeight:600}}>${fmt(x[1])}</div></div>`)}</div>
         </div></div>
       <div class="card"><div class="row"><h2>Próximos vencimentos</h2><span class="mut sm">${fmt(totD)} em dívidas</span></div>
         ${due.length===0?html`<p class="mut sm" style=${{marginTop:8}}>Tudo pago este mês.</p>`:due.map(x=>{const d=x.d;return html`<div key=${d.id} class="item row"><span>${d.n} <span class=${"sm "+(!x.next&&d.dd<day?"bad":"mut")}>${x.next?"vence "+p2(d.dd)+nmL:d.dd<day?"venceu dia "+d.dd:d.dd===day?"vence hoje":"dia "+d.dd}</span></span><span class="flex" style=${{alignItems:"center",gap:10,flex:"none"}}><span class="num" style=${{fontSize:18}}>${fmt(d.tp==="parcela"?d.ins:d.total)}</span>${!x.next&&html`<button class="btn s" aria-label=${"Marcar "+d.n+" como paga"} onClick=${()=>pay(d)}>Paguei</button>`}</span></div>`})}
@@ -419,7 +435,10 @@ function App(){
         <label class="btn gh" style=${{flex:1,textAlign:"center",cursor:"pointer"}}>Restaurar backup<input type="file" accept="application/json" hidden onChange=${restore}/></label></div></div>
     </div>`}
 
-    <p class="mut sm" style=${{textAlign:"center",marginTop:24}}>MARCHA by LC28 · finanças, metas, conquistas</p>
+    <footer class="foot"><div class="mut sm">Sistema criado por</div>
+      <div class="wm"><svg viewBox="80 80 300 300" width="40" height="40" aria-hidden="true"><path d="M107 149 A180 180 0 0 1 365 149" fill="none" stroke="#A6ADB6" stroke-width="17" stroke-linecap="round" stroke-dasharray="45 13"/><path d="M305 90 A180 180 0 0 1 365 149" fill="none" stroke="#E5252F" stroke-width="17" stroke-linecap="round"/><path d="M92 333 L145 174 L229 266 L307 174 L365 333 L309 333 L287 258 L230 326 L169 257 L148 333 Z" fill="#fff"/><path d="M182 359 L327 359 L294 373 L160 373 Z" fill="#E5252F"/></svg><div><div class="wmt">MARCHA</div><div class="wms"></div></div></div>
+      <div class="wmb">by LC<span>28</span></div>
+      <div class="mut" style=${{fontSize:11,letterSpacing:".28em",marginTop:10}}>FINANÇAS • METAS • CONQUISTAS</div></footer>
     <nav><div>${[["inicio","Início"],["dividas","Dívidas"],["meta","Cofre"],["plano","Planejar"]].map(t=>html`<button key=${t[0]} class=${tab===t[0]?"on":""} aria-current=${tab===t[0]?"page":null} onClick=${()=>setTab(t[0])}><svg viewBox="0 0 24 24"><path d=${ICON[t[0]]}/></svg><span>${t[1]}</span></button>`)}</div></nav>
   </div>`;
 }
