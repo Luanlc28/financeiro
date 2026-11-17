@@ -121,7 +121,7 @@ button.pill.on{background:#E5252F;color:#fff;border-color:#E5252F}
 .quote{font-size:15px;font-style:italic;color:var(--mut);padding:2px 4px 0;border-left:3px solid #E5252F;padding-left:12px}
 .bkwarn{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px 10px 16px;border:1px solid rgba(229,37,47,.4);background:rgba(229,37,47,.08);border-radius:99px;font-size:13px}
 .lg{min-height:100vh;min-height:100dvh;position:relative;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
-.lgbg{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.lgbg{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;transition:opacity 1.2s ease}
 .lgsh{position:fixed;inset:0;z-index:0;background:linear-gradient(180deg,rgba(10,10,12,.55) 0%,rgba(10,10,12,.15) 35%,rgba(10,10,12,.75) 65%,#0A0A0C 100%)}
 .lgtop{position:relative;z-index:1;display:flex;gap:8px;padding:calc(14px + env(safe-area-inset-top)) 16px 0}
 .lgic{width:38px;height:38px;border-radius:50%;background:rgba(10,10,12,.45);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.12);color:#F5F6F8;display:flex;align-items:center;justify-content:center;font-size:14px}
@@ -145,7 +145,7 @@ body:has(.lg)::before{display:none}
 <script>
 "use strict";
 /* atualizacao automatica: se houver versao mais nova publicada, recarrega sozinho */
-(function(){const V="39";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V){const k="upd_"+t,n=+(sessionStorage.getItem(k)||0);if(n<3){sessionStorage.setItem(k,n+1);location.replace(location.pathname+"?v="+t+"&r="+Date.now())}}}).catch(()=>{})}
+(function(){const V="40";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V){const k="upd_"+t,n=+(sessionStorage.getItem(k)||0);if(n<3){sessionStorage.setItem(k,n+1);location.replace(location.pathname+"?v="+t+"&r="+Date.now())}}}).catch(()=>{})}
 ck();document.addEventListener("visibilitychange",()=>{if(!document.hidden)ck()})})();
 const {useState,useEffect,useMemo}=React;
 const h=(t,p,...c)=>{if(p&&"class" in p){p=Object.assign({},p,{className:p.class});delete p.class}return React.createElement(t,p,...c)};
@@ -493,20 +493,23 @@ function Login({onLogin}){
     if(hex===PASS_HASH){sessionStorage.setItem("luan_ok","1");onLogin()}else setErr(true)}
   const [wall,setWall]=useState(()=>{try{return localStorage.getItem("luan_wall")||""}catch(e){return ""}});
   const putWall=d=>{try{if(d)localStorage.setItem("luan_wall",d);else localStorage.removeItem("luan_wall");setWall(d)}catch(e){alert("Não deu para salvar essa imagem. Tente outra.")}};
+  const slides=(wall?[wall]:[]).concat(["login.jpg","w10.jpg","w2.jpg","w4.jpg","w12.jpg","m3.jpg"]);
+  const [si,setSi]=useState(0);useEffect(()=>{if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;const t=setInterval(()=>setSi(x=>x+1),5000);return()=>clearInterval(t)},[]);
   const hr=new Date().getHours(),sau=hr<12?"Bom dia":hr<18?"Boa tarde":"Boa noite";
   const fr=FR[Math.floor((Date.now()-new Date(new Date().getFullYear(),0,0))/864e5+15*99-321)%FR.length];
   return html`<form onSubmit=${ck} class="lg">
-    <img class="lgbg" src=${wall||"login.jpg"} alt="" aria-hidden="true"/><div class="lgsh" aria-hidden="true"></div>
+    ${slides.map((u,k)=>html`<img key=${u.slice(0,40)+k} class="lgbg" src=${u} alt="" aria-hidden="true" style=${{opacity:k===si%slides.length?1:0}}/>`)}<div class="lgsh" aria-hidden="true"></div>
     <div class="lgtop">
       <button type="button" class="lgic" aria-label="Trocar papel de parede" onClick=${()=>pickImg(1100,putWall)}><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/></svg></button>
       ${wall&&html`<button type="button" class="lgic" aria-label="Voltar ao fundo padrão" onClick=${()=>putWall("")}>✕</button>`}</div>
-    <div class="lgbrand"><svg viewBox="80 80 300 300" width="44" height="44" aria-hidden="true"><path d="M107 149 A180 180 0 0 1 365 149" fill="none" stroke="#A6ADB6" stroke-width="17" stroke-linecap="round" stroke-dasharray="45 13"/><path d="M305 90 A180 180 0 0 1 365 149" fill="none" stroke="#E5252F" stroke-width="17" stroke-linecap="round"/><path d="M92 333 L145 174 L229 266 L307 174 L365 333 L309 333 L287 258 L230 326 L169 257 L148 333 Z" fill="#fff"/><path d="M182 359 L327 359 L294 373 L160 373 Z" fill="#E5252F"/></svg><div class="lgw">MARCHA</div><div class="lgb">by LC<span>28</span></div></div>
+    <div style=${{flex:1}}></div>
     <div class="lgsheet">
       <div class="lghi">${sau}, Luan</div>
       <div class="lgfr">“${fr}”</div>
       ${fidOk()&&localStorage.getItem(FID)&&html`<button type="button" class="btn" style=${{width:"100%"}} onClick=${async()=>{try{await fidLogin();sessionStorage.setItem("luan_ok","1");onLogin()}catch(e){}}}>Entrar com Face ID</button>`}
       <div class="flex" style=${{width:"100%"}}><input class="in" type="password" placeholder="Senha" aria-label="Senha" value=${pwd} onChange=${e=>{setPwd(e.target.value);setErr(false)}}/><button class=${fidOk()&&localStorage.getItem(FID)?"btn gh":"btn"} aria-label="Entrar com senha" style=${{flex:"none",width:56}}>→</button></div>
       ${err&&html`<div class="bad sm" role="alert">Senha incorreta.</div>`}
+      <div class="foot" style=${{marginTop:10}}><span>criado por</span><svg viewBox="80 80 300 300" width="14" height="14" aria-hidden="true"><path d="M107 149 A180 180 0 0 1 365 149" fill="none" stroke="#A6ADB6" stroke-width="17" stroke-linecap="round" stroke-dasharray="45 13"/><path d="M305 90 A180 180 0 0 1 365 149" fill="none" stroke="#E5252F" stroke-width="17" stroke-linecap="round"/><path d="M92 333 L145 174 L229 266 L307 174 L365 333 L309 333 L287 258 L230 326 L169 257 L148 333 Z" fill="#fff"/><path d="M182 359 L327 359 L294 373 L160 373 Z" fill="#E5252F"/></svg><b>MARCHA</b><span>by LC<i>28</i></span></div>
     </div></form>`;
 }
 function Root(){const [a,setA]=useState(()=>sessionStorage.getItem("luan_ok")==="1");return a?html`<${App}/>`:html`<${Login} onLogin=${()=>setA(true)}/>`}
