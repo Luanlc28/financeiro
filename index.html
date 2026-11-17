@@ -127,7 +127,7 @@ nav button.on svg{filter:drop-shadow(0 0 6px rgba(229,37,47,.7))}
 <script>
 "use strict";
 /* atualizacao automatica: se houver versao mais nova publicada, recarrega sozinho */
-(function(){const V="21";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V&&new URLSearchParams(location.search).get("v")!==t)location.replace(location.pathname+"?v="+t)}).catch(()=>{})}
+(function(){const V="22";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V&&new URLSearchParams(location.search).get("v")!==t)location.replace(location.pathname+"?v="+t)}).catch(()=>{})}
 ck();document.addEventListener("visibilitychange",()=>{if(!document.hidden)ck()})})();
 const {useState,useEffect,useMemo}=React;
 const h=(t,p,...c)=>{if(p&&"class" in p){p=Object.assign({},p,{className:p.class});delete p.class}return React.createElement(t,p,...c)};
@@ -470,7 +470,8 @@ function Login({onLogin}){
     if(hex===PASS_HASH){sessionStorage.setItem("luan_ok","1");onLogin()}else setErr(true)}
   const [wall,setWall]=useState(()=>{try{return localStorage.getItem("luan_wall")||""}catch(e){return ""}});
   const putWall=d=>{try{if(d)localStorage.setItem("luan_wall",d);else localStorage.removeItem("luan_wall");setWall(d)}catch(e){alert("Imagem grande demais. Tente outra.")}};
-  return html`<form onSubmit=${ck} style=${{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",padding:20,background:wall?"linear-gradient(rgba(10,10,12,.35),rgba(10,10,12,.85)),url("+wall+") center/cover no-repeat fixed":""}}>
+  return html`<form onSubmit=${ck} style=${{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
+    ${wall&&html`<div aria-hidden="true" style=${{position:"fixed",inset:0,zIndex:-1,backgroundImage:"linear-gradient(rgba(10,10,12,.35),rgba(10,10,12,.85)),url("+wall+")",backgroundSize:"cover",backgroundPosition:"center"}}></div>`}
     <div style=${{position:"fixed",top:"calc(14px + env(safe-area-inset-top))",left:14,display:"flex",gap:6,zIndex:2}}>
       <button type="button" class="btn gh s" aria-label="Trocar papel de parede" onClick=${()=>pickImg(1400,putWall)}>🖼️</button>
       ${wall&&html`<button type="button" class="btn gh s" aria-label="Remover papel de parede" onClick=${()=>putWall("")}>✕</button>`}</div>
