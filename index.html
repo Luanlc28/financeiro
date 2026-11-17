@@ -132,7 +132,7 @@ button.pill.on{background:#E5252F;color:#fff;border-color:#E5252F}
 <script>
 "use strict";
 /* atualizacao automatica: se houver versao mais nova publicada, recarrega sozinho */
-(function(){const V="36";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V){const k="upd_"+t,n=+(sessionStorage.getItem(k)||0);if(n<3){sessionStorage.setItem(k,n+1);location.replace(location.pathname+"?v="+t+"&r="+Date.now())}}}).catch(()=>{})}
+(function(){const V="37";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V){const k="upd_"+t,n=+(sessionStorage.getItem(k)||0);if(n<3){sessionStorage.setItem(k,n+1);location.replace(location.pathname+"?v="+t+"&r="+Date.now())}}}).catch(()=>{})}
 ck();document.addEventListener("visibilitychange",()=>{if(!document.hidden)ck()})})();
 const {useState,useEffect,useMemo}=React;
 const h=(t,p,...c)=>{if(p&&"class" in p){p=Object.assign({},p,{className:p.class});delete p.class}return React.createElement(t,p,...c)};
@@ -287,14 +287,14 @@ function Meta({g,save}){
     </div>
     <div class="card">
       <${Gauge} pct=${pct}/>
-      <p style=${{textAlign:"center",marginTop:4}}>${next?html`Faltam <b>${fmt(next.v-saved)}</b> para ${next.w?"a "+next.w.n:"a parada de "+short(next.v)}`:"Você chegou ao fim da estrada. Hora de escolher um novo destino."}</p>
+      <p style=${{textAlign:"center",marginTop:4}}>${next?html`Faltam <b>${fmt(next.v-saved)}</b>`:"Fim da estrada 🏁"}</p>
       ${ahead.length>0&&html`<div class="flex" style=${{marginTop:14}}>${ahead.map((x,i)=>html`<div key=${x.v} class=${"chipb"+(i===0?" nx":"")} style=${{textAlign:"center"}}><div class="sm mut" style=${{fontWeight:400}}>${i===0?"próxima":"depois"}</div>${short(x.v)}</div>`)}</div>`}
     </div>
     <div class="card g2">
       <div class="row"><h2>Meta de ${MF[new Date().getMonth()].toLowerCase()}</h2><span class="flex" style=${{alignItems:"center",gap:8}}><svg viewBox="8 6 50 48" width="46" height="44" role="img" aria-label=${"Cofrinho "+mp.toFixed(0)+"% cheio"}><defs><clipPath id="pg"><path d="M14 22c0-7 7-12 17-12 4 0 7 .7 10 2l5-4 1 7c2 2 3 4 3 6h3v7h-4c-1 3-4 5-7 6v6h-6v-5h-9v5h-6v-7c-4-2-7-6-7-11z"/></clipPath></defs><path d="M14 22c0-7 7-12 17-12 4 0 7 .7 10 2l5-4 1 7c2 2 3 4 3 6h3v7h-4c-1 3-4 5-7 6v6h-6v-5h-9v5h-6v-7c-4-2-7-6-7-11z" fill="#22272B"/><rect x="0" y=${54-44*Math.min(100,mp)/100} width="64" height="60" fill="#E5252F" clip-path="url(#pg)" style=${{transition:"y .8s"}}/><path d="M14 22c0-7 7-12 17-12 4 0 7 .7 10 2l5-4 1 7c2 2 3 4 3 6h3v7h-4c-1 3-4 5-7 6v6h-6v-5h-9v5h-6v-7c-4-2-7-6-7-11z" fill="none" stroke="#F5F6F8" stroke-width="1.6"/><circle cx="43" cy="20" r="1.6" fill="#F5F6F8"/><rect x="26" y="9" width="9" height="2.4" rx="1.2" fill="#F5F6F8"/></svg><span class="num mid">${mp.toFixed(0)}%</span></span></div>
       <div class="bar" style=${{margin:"12px 0 8px",height:14}}><i style=${{width:mp+"%",background:"#fff"}}></i></div>
-      <div class="sm" style=${{marginBottom:12}}>${!(g.monthly>0)?"Escolha quanto quer guardar por mês. Pode ser pouco: o que vale é bater.":month>=g.monthly?"Meta do mês batida 🎉 O que entrar agora é bônus.":fmt(Math.max(0,month))+" de "+fmt(g.monthly)+". Faltam "+fmt(g.monthly-Math.max(0,month))+"."}</div>
-      <${F} l="Quanto quero guardar por mês (R$)"><${N} v=${g.monthly} on=${x=>set("monthly",x)}/><//>
+      <div class="sm" style=${{marginBottom:12}}>${!(g.monthly>0)?"Defina quanto guardar por mês.":month>=g.monthly?"Meta batida 🎉":fmt(Math.max(0,month))+" de "+fmt(g.monthly)}</div>
+      <${F} l="Por mês (R$)"><${N} v=${g.monthly} on=${x=>set("monthly",x)}/><//>
     </div>
     <div class="card stack" style=${{gap:12}}>
       <h2>Guardar agora</h2>
@@ -305,9 +305,8 @@ function Meta({g,save}){
     </div>
     <div class="card">
       <div class="row"><h2>Seus sonhos</h2><button class="btn gh s" onClick=${()=>setEdit(!edit)}>${edit?"Concluir":"Editar"}</button></div>
-      <p class="mut sm" style=${{margin:"4px 0 14px"}}>Sem pressa e sem prazo. Elas ficam aqui só para lembrar para onde a estrada vai.</p>
       ${edit?html`<div>${wish.map(w=>html`<div key=${w.id} class="flex" style=${{marginBottom:8}}><input class="in" style=${{flex:2,minWidth:0}} aria-label="Modelo" placeholder="modelo" value=${w.n} onChange=${e=>upW(w.id,"n",e.target.value)}/><input class="in" style=${{flex:1,minWidth:0}} type="number" inputMode="decimal" aria-label="Valor em reais" placeholder="valor" value=${w.v||""} onChange=${e=>upW(w.id,"v",num(e.target.value))}/><select class="in" aria-label="Tipo" style=${{flex:"none",width:104,padding:"0 6px"}} value=${w.t||"moto"} onChange=${e=>upW(w.id,"t",e.target.value)}><option value="moto">🏍️ Moto</option><option value="carro">🚗 Carro</option><option value="outro">⭐ Outro</option></select><button class="btn gh s" aria-label=${"Foto de "+w.n} onClick=${()=>pickImg(900,d=>upW(w.id,"img",d))}>${w.img?"✓ Foto":"📷 Foto"}</button><button class="mut" aria-label=${"Remover "+w.n} style=${{padding:"6px 8px"}} onClick=${()=>set("wish",wish.filter(x=>x.id!==w.id))}>✕</button></div>`)}<button class="btn gh s" onClick=${()=>set("wish",wish.concat([{id:Date.now(),n:"",v:0}]))}>Adicionar sonho</button></div>`
-      :html`<div><div class="flex" style=${{marginBottom:12,gap:5,flexWrap:"nowrap"}}>${[["","Todos"],["moto","🏍️"],["carro","🚗"],["outro","⭐"]].filter(([k])=>!k||wish.some(w=>(w.t||"moto")===k)).map(([k,l])=>html`<button key=${k} class=${"pill"+(ft===k?" on":"")} onClick=${()=>setFt(k)}>${l}</button>`)}</div><div class="scroll">${wish.filter(w=>!ft||(w.t||"moto")===ft).slice().sort((a,b)=>a.v-b.v).map(w=>html`<div key=${w.id} class="bk" style=${{position:"relative"}}><button class="flag" aria-label=${"Conquistei "+w.n} onClick=${()=>{if(confirm("Conquistou "+w.n+"? Ele vai para a garagem."))save(Object.assign({},g,{wish:wish.filter(x=>x.id!==w.id),got:(g.got||[]).concat([{n:w.n,img:w.img||((w.id<=16&&w.id!==5)?"w"+w.id+".jpg":""),t:w.t||"moto",d:Date.now()}])}))}}>🏁</button>${w.img||(w.id<=16&&w.id!==5)?html`<img src=${w.img||"w"+w.id+".jpg"} alt=${w.n} title=${w.id===3&&!w.img?"Foto: Lamb Chop Rides, CC BY 3.0, Wikimedia Commons":""} loading="lazy"/>`:html`<div class="ph">${{carro:"🚗",outro:"⭐"}[w.t]||"🏍️"}</div>`}<div style=${{fontWeight:600}}>${w.n}</div><span class="mut">${w.v>0&&saved>=w.v?"✓ alcançada":short(w.v)}</span>${mkt&&mkt.itens&&mkt.itens[w.id]&&Math.abs(mkt.itens[w.id]-w.v)>=1000&&html`<button class="mut" style=${{fontSize:12,textAlign:"left",padding:"2px 0",textDecoration:"underline"}} onClick=${()=>upW(w.id,"v",mkt.itens[w.id])}>Mercado (${mkt.mes}): ${fmt(mkt.itens[w.id])} · usar</button>`}${w.v>0&&saved<w.v&&html`<div class="bar" style=${{height:6,marginTop:6}}><i style=${{width:Math.max(2,saved/w.v*100)+"%",background:"#E5252F"}}></i></div><span class="mut" style=${{fontSize:12}}>${Math.floor(saved/w.v*100)}% com o que você já guardou</span>`}</div>`)}</div></div>`}
+      :html`<div><div class="flex" style=${{marginBottom:12,gap:5,flexWrap:"nowrap"}}>${[["","Todos"],["moto","🏍️"],["carro","🚗"],["outro","⭐"]].filter(([k])=>!k||wish.some(w=>(w.t||"moto")===k)).map(([k,l])=>html`<button key=${k} class=${"pill"+(ft===k?" on":"")} onClick=${()=>setFt(k)}>${l}</button>`)}</div><div class="scroll">${wish.filter(w=>!ft||(w.t||"moto")===ft).slice().sort((a,b)=>a.v-b.v).map(w=>html`<div key=${w.id} class="bk" style=${{position:"relative"}}><button class="flag" aria-label=${"Conquistei "+w.n} onClick=${()=>{if(confirm("Conquistou "+w.n+"? Ele vai para a garagem."))save(Object.assign({},g,{wish:wish.filter(x=>x.id!==w.id),got:(g.got||[]).concat([{n:w.n,img:w.img||((w.id<=16&&w.id!==5)?"w"+w.id+".jpg":""),t:w.t||"moto",d:Date.now()}])}))}}>🏁</button>${w.img||(w.id<=16&&w.id!==5)?html`<img src=${w.img||"w"+w.id+".jpg"} alt=${w.n} title=${w.id===3&&!w.img?"Foto: Lamb Chop Rides, CC BY 3.0, Wikimedia Commons":""} loading="lazy"/>`:html`<div class="ph">${{carro:"🚗",outro:"⭐"}[w.t]||"🏍️"}</div>`}<div style=${{fontWeight:600}}>${w.n}</div><span class="mut">${w.v>0&&saved>=w.v?"✓ alcançada":short(w.v)}</span>${mkt&&mkt.itens&&mkt.itens[w.id]&&Math.abs(mkt.itens[w.id]-w.v)>=1000&&html`<button class="mut" style=${{fontSize:12,textAlign:"left",padding:"2px 0",textDecoration:"underline"}} onClick=${()=>upW(w.id,"v",mkt.itens[w.id])}>Mercado (${mkt.mes}): ${fmt(mkt.itens[w.id])} · usar</button>`}${w.v>0&&saved<w.v&&html`<div class="bar" style=${{height:6,marginTop:6}}><i style=${{width:Math.max(2,saved/w.v*100)+"%",background:"#E5252F"}}></i></div><span class="mut" style=${{fontSize:12}}>${Math.floor(saved/w.v*100)}%</span>`}</div>`)}</div></div>`}
     </div>
     <div class="card">
       <h2>Já passaram pela garagem</h2>
@@ -404,7 +403,6 @@ function App(){
       <div class=${"card hero"+(real<0?" neg":"")}>
         <div class="row"><span class="sm">Sobra real deste mês</span><span class=${"pill "+(real<0?"neg":"pos")}>${real<0?"no vermelho":"no azul"}</span></div>
         <div class="big" style=${{margin:"12px 0 8px"}}>${sg(real)}</div>
-        <div class="sm">${real<0?"Este mês as contas passam da sua receita.":"É o que sobra depois das fixas e das dívidas."}</div>
       </div>
       <div class="card"><h2>Para onde vai sua receita</h2>
         <div class="flex" style=${{alignItems:"center",gap:18,marginTop:14}}>
@@ -446,8 +444,7 @@ function App(){
         <div class="item row"><span class="mut">Acumulado até aqui</span><span class="num" style=${{fontSize:18}}>${sg(proj[sel].acc-(spent))}</span></div>
       </div>
       <div class="card"><div class="row"><h2>Simular renda extra</h2><span class="num mid amb">${fmt(cfg.extra)}</span></div>
-        <input type="range" aria-label="Renda extra mensal" min="0" max="5000" step="100" value=${cfg.extra||0} onChange=${e=>setCfg({...cfg,extra:+e.target.value})}/>
-        <p class="mut sm">Entra na receita de todos os meses. Deixe em zero para ver o cenário real.</p></div>
+        <input type="range" aria-label="Renda extra mensal" min="0" max="5000" step="100" value=${cfg.extra||0} onChange=${e=>setCfg({...cfg,extra:+e.target.value})}/></div>
       <div class="card"><div class="row"><h2>Meta de economia mensal</h2><span class="num mid amb">${fmt(cfg.sav)}</span></div>
         <input type="range" aria-label="Meta de economia mensal" min="0" max="2000" step="50" value=${cfg.sav||0} onChange=${e=>setCfg({...cfg,sav:+e.target.value})}/>
         <p class=${"sm "+(real>=cfg.sav?"ok":"bad")}>${real>=cfg.sav?"Dá para cumprir este mês: a sobra é "+fmt(real)+".":"Faltam "+fmt(cfg.sav-Math.max(0,real))+" para cumprir este mês."}</p></div>
@@ -470,7 +467,7 @@ async function fidSetup(){const r=crypto.getRandomValues(new Uint8Array(16));
 async function fidLogin(){await navigator.credentials.get({publicKey:{challenge:crypto.getRandomValues(new Uint8Array(32)),allowCredentials:[{type:"public-key",id:ub64(localStorage.getItem(FID))}],userVerification:"required",timeout:60000}})}
 function FaceCard(){const [on,setOn]=useState(()=>!!localStorage.getItem(FID));const [msg,setMsg]=useState("");
   if(!fidOk())return null;
-  return html`<div class="card stack" style=${{gap:10}}><h2>Face ID</h2><p class="mut sm">${on?"Ativado. Na tela de entrada, toque em Entrar com Face ID.":"Entre no app usando o rosto, sem digitar a senha."}</p>
+  return html`<div class="card stack" style=${{gap:10}}><h2>Face ID</h2>
     ${on?html`<button class="btn gh" onClick=${()=>{localStorage.removeItem(FID);setOn(false);setMsg("")}}>Desativar Face ID</button>`
       :html`<button class="btn" onClick=${async()=>{try{await fidSetup();setOn(true);setMsg("")}catch(e){setMsg("Não foi possível ativar. Tente de novo.")}}}>Ativar Face ID</button>`}
     ${msg&&html`<div class="bad sm" role="alert">${msg}</div>`}</div>`}
