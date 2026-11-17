@@ -143,7 +143,7 @@ body:has(.lg)::before{display:none}
 .fidb{width:64px;height:64px;border-radius:50%;background:rgba(229,37,47,.92);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(229,37,47,.45)}
 .trip{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px}.trip label{font-size:11px;color:var(--mut)}.trip .in{min-height:38px;padding:6px 8px;font-size:14px;margin-top:2px}
 /* ui-ux-pro-max: alvos de toque >=44px sem mudar o visual, textos minimos, movimento reduzido */
-button.pill,.flag,.lgic{position:relative}button.pill::after,.flag::after,.lgic::after{content:"";position:absolute;inset:-8px}
+button.pill{position:relative}button.pill::after,.flag::after,.lgic::after{content:"";position:absolute;inset:-8px}
 .top{position:relative}.top .btn.s{min-height:44px;min-width:44px}
 nav button{font-size:12px}
 @media (prefers-reduced-motion:reduce){.lgtrack,.needle,.bar i{transition:none!important}}
@@ -159,7 +159,7 @@ nav button{font-size:12px}
 <script>
 "use strict";
 /* atualizacao automatica: se houver versao mais nova publicada, recarrega sozinho */
-const APPV="56";
+const APPV="57";
 function chkVer(){return fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():"").then(t=>{t=t.trim();if(t&&t!==APPV){const k="upd_"+t,n=+(sessionStorage.getItem(k)||0);if(n<3){sessionStorage.setItem(k,n+1);location.replace(location.pathname+"?v="+t+"&r="+Date.now());return true}}return false}).catch(()=>false)}
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)chkVer()});
 const {useState,useEffect,useMemo}=React;
@@ -339,6 +339,10 @@ function Meta({g,save}){
       <div class="flex"><input class="in" style=${{flex:1,minWidth:0}} inputMode="decimal" aria-label="Outro valor em reais" placeholder="outro valor" value=${v} onChange=${e=>setV(e.target.value)}/>
       <button class="btn" onClick=${()=>dep(num(v))}>Guardar</button><button class="btn gh" onClick=${()=>dep(-num(v))}>Retirar</button></div>
       <div>${deps.slice().reverse().slice(0,5).map(x=>html`<div key=${x.id} class="item row"><span class="mut">${dk(x.ts).slice(8)}/${dk(x.ts).slice(5,7)}</span><span class="flex" style=${{alignItems:"center"}}><span class=${"num "+(x.v<0?"bad":"ok")} style=${{fontSize:18}}>${x.v<0?"- ":"+ "}${fmt(x.v)}</span><button class="mut" aria-label="Excluir lançamento" style=${{padding:"6px 10px"}} onClick=${()=>set("deps",deps.filter(y=>y.id!==x.id))}>✕</button></span></div>`)}</div>
+    </div>
+    <div class="card"><div class="row"><h2>✈️ Viagens</h2><button class="btn s" onClick=${()=>{set("wish",wish.concat([{id:Date.now(),n:"",v:0,t:"viagem"}]));setFt("viagem");setEdit(true);setTimeout(()=>{const e=[...document.querySelectorAll('input[aria-label=Modelo]')].pop();e&&(e.scrollIntoView({block:"center"}),e.focus())},250)}}>Planejar viagem</button></div>
+      ${wish.filter(w=>w.t==="viagem").length===0?html`<p class="mut sm" style=${{marginTop:8}}>Nenhuma viagem planejada ainda.</p>`:wish.filter(w=>w.t==="viagem").map(w=>html`<div key=${w.id} class="item"><div class="row"><span style=${{fontWeight:600}}>${w.n||"Sem destino"}</span><span class="num">${fmt(w.v)}</span></div><div class="row mut" style=${{fontSize:12,marginTop:2}}><span>${w.dt?MS[+w.dt.slice(5)-1]+"/"+w.dt.slice(0,4):"sem data"}${w.dt&&w.v>saved?" · "+short(Math.ceil((w.v-saved)/mesAte(w.dt)))+"/mês":""}</span><span>${w.v>0?Math.min(100,Math.floor(saved/w.v*100))+"%":""}</span></div><div class="bar" style=${{height:6,marginTop:6}}><i style=${{width:(w.v>0?Math.min(100,Math.max(2,saved/w.v*100)):0)+"%",background:"#E5252F"}}></i></div></div>`)}
+      <button class="mut sm" style=${{marginTop:10,textDecoration:"underline"}} onClick=${()=>{setFt("viagem");setEdit(true)}}>Editar orçamentos</button>
     </div>
     <div class="card">
       <div class="row"><h2>Seus sonhos</h2><button class="btn gh s" onClick=${()=>setEdit(!edit)}>${edit?"Concluir":"Editar"}</button></div>
