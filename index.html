@@ -136,7 +136,8 @@ body:has(.lg)::before{display:none}
 .vs{font-size:12px;color:var(--mut);margin-top:6px;padding-left:15px;opacity:.85}.vs span{color:#E5252F;font-weight:600;white-space:nowrap}
 .bdot{position:absolute;top:2px;right:2px;width:8px;height:8px;border-radius:50%;background:#E5252F;pointer-events:none}
 .bpop{position:absolute;right:0;top:calc(100% + 8px);width:210px;background:#14181B;border:1px solid var(--line);border-radius:18px;padding:14px;z-index:20;box-shadow:0 12px 30px rgba(0,0,0,.5);text-align:left}
-.lgvs{margin:14px -8px 0;padding:12px 16px;border-radius:16px;background:rgba(10,10,12,.45);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.1)}.lgvs div{font-family:Sora;font-weight:500;font-size:13px;line-height:1.45}.lgvs span{display:block;margin-top:4px;font-size:12px;color:#E5252F;font-weight:700;letter-spacing:.04em}
+.lgvs{margin:12px 0 0;padding:4px 8px;opacity:.85}.lgvs div{font-weight:400;font-size:13px;line-height:1.45;font-style:italic;color:#E8EAED}.lgvs span{display:block;margin-top:4px;font-size:12px;color:#E5252F;font-weight:700;letter-spacing:.04em}
+.fidb{width:64px;height:64px;border-radius:50%;background:rgba(229,37,47,.92);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(229,37,47,.45)}
 @keyframes fly{to{transform:translate(var(--x),var(--y)) rotate(var(--r));opacity:0}}
 @media (prefers-reduced-motion:reduce){.boom{display:none}}
 </style>
@@ -149,7 +150,7 @@ body:has(.lg)::before{display:none}
 <script>
 "use strict";
 /* atualizacao automatica: se houver versao mais nova publicada, recarrega sozinho */
-(function(){const V="50";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V){const k="upd_"+t,n=+(sessionStorage.getItem(k)||0);if(n<3){sessionStorage.setItem(k,n+1);location.replace(location.pathname+"?v="+t+"&r="+Date.now())}}}).catch(()=>{})}
+(function(){const V="51";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V){const k="upd_"+t,n=+(sessionStorage.getItem(k)||0);if(n<3){sessionStorage.setItem(k,n+1);location.replace(location.pathname+"?v="+t+"&r="+Date.now())}}}).catch(()=>{})}
 ck();document.addEventListener("visibilitychange",()=>{if(!document.hidden)ck()})})();
 const {useState,useEffect,useMemo}=React;
 const h=(t,p,...c)=>{if(p&&"class" in p){p=Object.assign({},p,{className:p.class});delete p.class}return React.createElement(t,p,...c)};
@@ -499,7 +500,7 @@ function FaceCard(){const [on,setOn]=useState(()=>!!localStorage.getItem(FID));c
       :html`<button class="btn" onClick=${async()=>{try{await fidSetup();setOn(true);setMsg("")}catch(e){setMsg("Não foi possível ativar. Tente de novo.")}}}>Ativar Face ID</button>`}
     ${msg&&html`<div class="bad sm" role="alert">${msg}</div>`}</div>`}
 function Login({onLogin}){
-  const [pwd,setPwd]=useState("");const [err,setErr]=useState(false);
+  const [pwd,setPwd]=useState("");const [usePw,setUsePw]=useState(false);const [err,setErr]=useState(false);
   async function ck(e){e.preventDefault();
     const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(pwd));
     const hex=Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,"0")).join("");
@@ -519,8 +520,8 @@ function Login({onLogin}){
     <div class="lgtxt"><div class="lghi">${sau}, Magnata</div>${(()=>{const v=VS[Math.floor((Date.now()-new Date(new Date().getFullYear(),0,0))/864e5)%VS.length];return html`<div class="lgvs"><div>${v[0]}</div><span>${v[1]}</span></div>`})()}</div>
     <div style=${{flex:1}}></div>
     <div class="lgsheet">
-      ${fidOk()&&localStorage.getItem(FID)&&html`<button type="button" class="btn s" style=${{alignSelf:"center",padding:"8px 18px"}} onClick=${async()=>{try{await fidLogin();sessionStorage.setItem("luan_ok","1");onLogin()}catch(e){}}}>Entrar com Face ID</button>`}
-      <div class="flex" style=${{width:"100%"}}><input class="in" type="password" placeholder="Senha" aria-label="Senha" value=${pwd} onChange=${e=>{setPwd(e.target.value);setErr(false)}}/><button class=${fidOk()&&localStorage.getItem(FID)?"btn gh":"btn"} aria-label="Entrar com senha" style=${{flex:"none",width:56}}>→</button></div>
+      ${fidOk()&&localStorage.getItem(FID)&&!usePw?html`<button type="button" class="fidb" aria-label="Entrar com Face ID" onClick=${async()=>{try{await fidLogin();sessionStorage.setItem("luan_ok","1");onLogin()}catch(e){}}}><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 8V6a2 2 0 012-2h2M16 4h2a2 2 0 012 2v2M20 16v2a2 2 0 01-2 2h-2M8 20H6a2 2 0 01-2-2v-2M9 9v1M15 9v1M12 9v4h-1M9 16c1.7 1.3 4.3 1.3 6 0"/></svg></button><button type="button" class="mut" style=${{fontSize:12}} onClick=${()=>setUsePw(true)}>usar senha</button>`
+      :html`<div class="flex" style=${{width:"100%"}}><input class="in" type="password" placeholder="Senha" aria-label="Senha" value=${pwd} onChange=${e=>{setPwd(e.target.value);setErr(false)}}/><button class="btn" aria-label="Entrar com senha" style=${{flex:"none",width:56}}>→</button></div>`}
       ${err&&html`<div class="bad sm" role="alert">Senha incorreta.</div>`}
       <div class="foot" style=${{marginTop:10}}><span>criado por</span><svg viewBox="80 80 300 300" width="14" height="14" aria-hidden="true"><path d="M107 149 A180 180 0 0 1 365 149" fill="none" stroke="#A6ADB6" stroke-width="17" stroke-linecap="round" stroke-dasharray="45 13"/><path d="M305 90 A180 180 0 0 1 365 149" fill="none" stroke="#E5252F" stroke-width="17" stroke-linecap="round"/><path d="M92 333 L145 174 L229 266 L307 174 L365 333 L309 333 L287 258 L230 326 L169 257 L148 333 Z" fill="#fff"/><path d="M182 359 L327 359 L294 373 L160 373 Z" fill="#E5252F"/></svg><b>MARCHA</b><span>by LC<i>28</i></span></div>
     </div></form>`;
