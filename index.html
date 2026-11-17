@@ -131,7 +131,7 @@ button.pill.on{background:#E5252F;color:#fff;border-color:#E5252F}
 <script>
 "use strict";
 /* atualizacao automatica: se houver versao mais nova publicada, recarrega sozinho */
-(function(){const V="33";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V){const k="upd_"+t,n=+(sessionStorage.getItem(k)||0);if(n<3){sessionStorage.setItem(k,n+1);location.replace(location.pathname+"?v="+t+"&r="+Date.now())}}}).catch(()=>{})}
+(function(){const V="34";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V){const k="upd_"+t,n=+(sessionStorage.getItem(k)||0);if(n<3){sessionStorage.setItem(k,n+1);location.replace(location.pathname+"?v="+t+"&r="+Date.now())}}}).catch(()=>{})}
 ck();document.addEventListener("visibilitychange",()=>{if(!document.hidden)ck()})})();
 const {useState,useEffect,useMemo}=React;
 const h=(t,p,...c)=>{if(p&&"class" in p){p=Object.assign({},p,{className:p.class});delete p.class}return React.createElement(t,p,...c)};
@@ -404,16 +404,16 @@ function App(){
         <div class="big" style=${{margin:"12px 0 8px"}}>${sg(real)}</div>
         <div class="sm">${real<0?"Este mês as contas passam da sua receita.":"É o que sobra depois das fixas e das dívidas."}</div>
       </div>
-      <${EditList} title="Receitas" items=${incomes} save=${setInc} blank=${{n:"Nova receita",v:0,d:15}} sign=${1} day=${true} cur=${cur}/>
-      <${EditList} title="Despesas fixas" items=${fixed} save=${setFix} blank=${{n:"Nova despesa",v:0,c:"pessoal"}}/>
-      <div class="card"><div class="row"><h2>Próximos vencimentos</h2><span class="mut sm">${fmt(totD)} em dívidas</span></div>
-        ${due.length===0?html`<p class="mut sm" style=${{marginTop:8}}>Tudo pago este mês.</p>`:due.map(x=>{const d=x.d;return html`<div key=${d.id} class="item row"><span>${d.n} <span class=${"sm "+(!x.next&&d.dd<day?"bad":"mut")}>${x.next?"vence "+p2(d.dd)+nmL:d.dd<day?"venceu dia "+d.dd:d.dd===day?"vence hoje":"dia "+d.dd}</span></span><span class="flex" style=${{alignItems:"center",gap:10,flex:"none"}}><span class="num" style=${{fontSize:18}}>${fmt(d.tp==="parcela"?d.ins:d.total)}</span>${!x.next&&html`<button class="btn s" aria-label=${"Marcar "+d.n+" como paga"} onClick=${()=>pay(d)}>Paguei</button>`}</span></div>`})}
-      </div>
       <div class="card"><h2>Para onde vai sua receita</h2>
         <div class="flex" style=${{alignItems:"center",gap:18,marginTop:14}}>
           <${Donut} parts=${[[totF,"#3B6BFF"],[c0.pay,"#E5252F"],[Math.max(0,real),"#22C55E"]]} label=${fmt(totI)}/>
           <div class="stack" style=${{gap:10,flex:1}}>${[["Fixas",totF,"#3B6BFF"],["Dívidas do mês",c0.pay,"#E5252F"],["Sobra",Math.max(0,real),"#22C55E"]].map(x=>html`<div key=${x[0]}><div class="mut sm"><i class="dot" style=${{background:x[2]}}></i>${x[0]}</div><div class="num" style=${{fontSize:18,fontWeight:600}}>${fmt(x[1])}</div></div>`)}</div>
         </div></div>
+      <${EditList} title="Receitas" items=${incomes} save=${setInc} blank=${{n:"Nova receita",v:0,d:15}} sign=${1} day=${true} cur=${cur}/>
+      <div class="card"><div class="row"><h2>Próximos vencimentos</h2><span class="mut sm">${fmt(totD)} em dívidas</span></div>
+        ${due.length===0?html`<p class="mut sm" style=${{marginTop:8}}>Tudo pago este mês.</p>`:due.map(x=>{const d=x.d;return html`<div key=${d.id} class="item row"><span>${d.n} <span class=${"sm "+(!x.next&&d.dd<day?"bad":"mut")}>${x.next?"vence "+p2(d.dd)+nmL:d.dd<day?"venceu dia "+d.dd:d.dd===day?"vence hoje":"dia "+d.dd}</span></span><span class="flex" style=${{alignItems:"center",gap:10,flex:"none"}}><span class="num" style=${{fontSize:18}}>${fmt(d.tp==="parcela"?d.ins:d.total)}</span>${!x.next&&html`<button class="btn s" aria-label=${"Marcar "+d.n+" como paga"} onClick=${()=>pay(d)}>Paguei</button>`}</span></div>`})}
+      </div>
+      <${EditList} title="Despesas fixas" items=${fixed} save=${setFix} blank=${{n:"Nova despesa",v:0,c:"pessoal"}}/>
     </div>`}
 
 
