@@ -127,7 +127,7 @@ nav button.on svg{filter:drop-shadow(0 0 6px rgba(229,37,47,.7))}
 <script>
 "use strict";
 /* atualizacao automatica: se houver versao mais nova publicada, recarrega sozinho */
-(function(){const V="19";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V&&new URLSearchParams(location.search).get("v")!==t)location.replace(location.pathname+"?v="+t)}).catch(()=>{})}
+(function(){const V="20";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V&&new URLSearchParams(location.search).get("v")!==t)location.replace(location.pathname+"?v="+t)}).catch(()=>{})}
 ck();document.addEventListener("visibilitychange",()=>{if(!document.hidden)ck()})})();
 const {useState,useEffect,useMemo}=React;
 const h=(t,p,...c)=>{if(p&&"class" in p){p=Object.assign({},p,{className:p.class});delete p.class}return React.createElement(t,p,...c)};
@@ -292,8 +292,8 @@ function Meta({g,save}){
     <div class="card">
       <div class="row"><h2>No fim da estrada</h2><button class="btn gh s" onClick=${()=>setEdit(!edit)}>${edit?"Concluir":"Editar"}</button></div>
       <p class="mut sm" style=${{margin:"4px 0 14px"}}>Sem pressa e sem prazo. Elas ficam aqui só para lembrar para onde a estrada vai.</p>
-      ${edit?html`<div>${wish.map(w=>html`<div key=${w.id} class="flex" style=${{marginBottom:8}}><input class="in" style=${{flex:2,minWidth:0}} aria-label="Modelo" placeholder="modelo" value=${w.n} onChange=${e=>upW(w.id,"n",e.target.value)}/><input class="in" style=${{flex:1,minWidth:0}} type="number" inputMode="decimal" aria-label="Valor em reais" placeholder="valor" value=${w.v||""} onChange=${e=>upW(w.id,"v",num(e.target.value))}/><button class="mut" aria-label=${"Remover "+w.n} style=${{padding:"6px 8px"}} onClick=${()=>set("wish",wish.filter(x=>x.id!==w.id))}>✕</button></div>`)}<button class="btn gh s" onClick=${()=>set("wish",wish.concat([{id:Date.now(),n:"",v:0}]))}>Adicionar moto</button></div>`
-      :html`<div class="scroll">${wish.slice().sort((a,b)=>a.v-b.v).map(w=>html`<div key=${w.id} class="bk">${w.id<=4?html`<img src=${"w"+w.id+".jpg"} alt=${w.n} loading="lazy"/>`:html`<div class="ph">🏍️</div>`}<div style=${{fontWeight:600}}>${w.n}</div><span class="mut">${w.v>0&&saved>=w.v?"✓ alcançada":short(w.v)}</span></div>`)}</div>`}
+      ${edit?html`<div>${wish.map(w=>html`<div key=${w.id} class="flex" style=${{marginBottom:8}}><input class="in" style=${{flex:2,minWidth:0}} aria-label="Modelo" placeholder="modelo" value=${w.n} onChange=${e=>upW(w.id,"n",e.target.value)}/><input class="in" style=${{flex:1,minWidth:0}} type="number" inputMode="decimal" aria-label="Valor em reais" placeholder="valor" value=${w.v||""} onChange=${e=>upW(w.id,"v",num(e.target.value))}/><button class="btn gh s" aria-label=${"Foto de "+w.n} onClick=${()=>pickImg(900,d=>upW(w.id,"img",d))}>${w.img?"✓ Foto":"📷 Foto"}</button><button class="mut" aria-label=${"Remover "+w.n} style=${{padding:"6px 8px"}} onClick=${()=>set("wish",wish.filter(x=>x.id!==w.id))}>✕</button></div>`)}<button class="btn gh s" onClick=${()=>set("wish",wish.concat([{id:Date.now(),n:"",v:0}]))}>Adicionar moto</button></div>`
+      :html`<div class="scroll">${wish.slice().sort((a,b)=>a.v-b.v).map(w=>html`<div key=${w.id} class="bk">${w.img||w.id<=4?html`<img src=${w.img||"w"+w.id+".jpg"} alt=${w.n} loading="lazy"/>`:html`<div class="ph">🏍️</div>`}<div style=${{fontWeight:600}}>${w.n}</div><span class="mut">${w.v>0&&saved>=w.v?"✓ alcançada":short(w.v)}</span></div>`)}</div>`}
       <p class="mut" style=${{fontSize:11,marginTop:10}}>Fotos: Cjp24 (CC BY-SA 4.0), Lamb Chop Rides (CC BY 3.0), via Wikimedia Commons.</p>
     </div>
     <div class="card">
@@ -303,6 +303,10 @@ function Meta({g,save}){
   </div>`;
 }
 
+function pickImg(max,cb){const i=document.createElement("input");i.type="file";i.accept="image/*";
+  i.onchange=()=>{const f=i.files&&i.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{
+    const k=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);
+    c.getContext("2d").drawImage(im,0,0,c.width,c.height);try{cb(c.toDataURL("image/jpeg",.75))}catch(e){alert("Não deu para salvar a imagem. Tente uma menor.")}};im.src=r.result};r.readAsDataURL(f)};i.click()}
 /* ---------- app ---------- */
 const ICON={inicio:"M3 11l9-8 9 8M5 10v10h14V10",gastos:"M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6",dividas:"M3 6h18v12H3zM3 10h18",meta:"M4 18a9 9 0 1116 0M12 14l4-5",plano:"M4 20V10M10 20V4M16 20v-7M21 20H3"};
 function App(){
@@ -388,7 +392,7 @@ function App(){
       </div>
       <div class="card"><h2>Para onde vai sua receita</h2>
         <div class="flex" style=${{alignItems:"center",gap:18,marginTop:14}}>
-          <${Donut} parts=${[[totF,"#8B5CF6"],[c0.pay,"#FFD60A"],[Math.max(0,real),"#00E676"]]} label=${fmt(totI)}/>
+          <${Donut} parts=${[[totF,"#3B6BFF"],[c0.pay,"#E5252F"],[Math.max(0,real),"#22C55E"]]} label=${fmt(totI)}/>
           <div class="stack" style=${{gap:10,flex:1}}>${[["Fixas",totF,"#3B6BFF"],["Dívidas do mês",c0.pay,"#E5252F"],["Sobra",Math.max(0,real),"#22C55E"]].map(x=>html`<div key=${x[0]}><div class="mut sm"><i class="dot" style=${{background:x[2]}}></i>${x[0]}</div><div class="num" style=${{fontSize:18,fontWeight:600}}>${fmt(x[1])}</div></div>`)}</div>
         </div></div>
       <div class="card"><div class="row"><h2>Próximos vencimentos</h2><span class="mut sm">${fmt(totD)} em dívidas</span></div>
@@ -464,7 +468,12 @@ function Login({onLogin}){
     const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(pwd));
     const hex=Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,"0")).join("");
     if(hex===PASS_HASH){sessionStorage.setItem("luan_ok","1");onLogin()}else setErr(true)}
-  return html`<form onSubmit=${ck} style=${{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
+  const [wall,setWall]=useState(()=>{try{return localStorage.getItem("luan_wall")||""}catch(e){return ""}});
+  const putWall=d=>{try{if(d)localStorage.setItem("luan_wall",d);else localStorage.removeItem("luan_wall");setWall(d)}catch(e){alert("Imagem grande demais. Tente outra.")}};
+  return html`<form onSubmit=${ck} style=${{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",padding:20,background:wall?"linear-gradient(rgba(10,10,12,.35),rgba(10,10,12,.85)),url("+wall+") center/cover no-repeat fixed":""}}>
+    <div style=${{position:"fixed",top:"calc(14px + env(safe-area-inset-top))",left:14,display:"flex",gap:6,zIndex:2}}>
+      <button type="button" class="btn gh s" aria-label="Trocar papel de parede" onClick=${()=>pickImg(1400,putWall)}>🖼️</button>
+      ${wall&&html`<button type="button" class="btn gh s" aria-label="Remover papel de parede" onClick=${()=>putWall("")}>✕</button>`}</div>
     <div class="stack" style=${{width:"100%",maxWidth:340}}>
       <h1>Marcha</h1>
       <${F} l="Senha"><input class="in" type="password" autoFocus value=${pwd} onChange=${e=>{setPwd(e.target.value);setErr(false)}}/><//>
