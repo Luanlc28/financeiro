@@ -127,7 +127,7 @@ nav button.on svg{filter:drop-shadow(0 0 6px rgba(229,37,47,.7))}
 <script>
 "use strict";
 /* atualizacao automatica: se houver versao mais nova publicada, recarrega sozinho */
-(function(){const V="17";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V&&new URLSearchParams(location.search).get("v")!==t)location.replace(location.pathname+"?v="+t)}).catch(()=>{})}
+(function(){const V="18";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V&&new URLSearchParams(location.search).get("v")!==t)location.replace(location.pathname+"?v="+t)}).catch(()=>{})}
 ck();document.addEventListener("visibilitychange",()=>{if(!document.hidden)ck()})})();
 const {useState,useEffect,useMemo}=React;
 const h=(t,p,...c)=>{if(p&&"class" in p){p=Object.assign({},p,{className:p.class});delete p.class}return React.createElement(t,p,...c)};
@@ -431,6 +431,7 @@ function App(){
       <div class="card"><div class="row"><h2>Meta de economia mensal</h2><span class="num mid amb">${fmt(cfg.sav)}</span></div>
         <input type="range" aria-label="Meta de economia mensal" min="0" max="2000" step="50" value=${cfg.sav||0} onChange=${e=>setCfg({...cfg,sav:+e.target.value})}/>
         <p class=${"sm "+(real>=cfg.sav?"ok":"bad")}>${real>=cfg.sav?"Dá para cumprir este mês: a sobra é "+fmt(real)+".":"Faltam "+fmt(cfg.sav-Math.max(0,real))+" para cumprir este mês."}</p></div>
+      <${FaceCard}/>
       <div class="card stack" style=${{gap:10}}><h2>Backup</h2><p class="mut sm">Seus dados ficam salvos só neste aparelho. Baixe um backup de vez em quando.</p>
         <div class="flex"><button class="btn gh" style=${{flex:1}} onClick=${backup}>Baixar backup</button>
         <label class="btn gh" style=${{flex:1,textAlign:"center",cursor:"pointer"}}>Restaurar backup<input type="file" accept="application/json" hidden onChange=${restore}/></label></div></div>
@@ -444,6 +445,18 @@ function App(){
   </div>`;
 }
 
+const FID="luan_fid",b64=a=>btoa(String.fromCharCode(...new Uint8Array(a))),ub64=t=>Uint8Array.from(atob(t),c=>c.charCodeAt(0));
+const fidOk=()=>!!(window.PublicKeyCredential&&navigator.credentials);
+async function fidSetup(){const r=crypto.getRandomValues(new Uint8Array(16));
+  const c=await navigator.credentials.create({publicKey:{challenge:crypto.getRandomValues(new Uint8Array(32)),rp:{name:"Marcha"},user:{id:r,name:"luan",displayName:"Luan"},pubKeyCredParams:[{type:"public-key",alg:-7},{type:"public-key",alg:-257}],authenticatorSelection:{authenticatorAttachment:"platform",userVerification:"required",residentKey:"preferred"},timeout:60000}});
+  localStorage.setItem(FID,b64(c.rawId))}
+async function fidLogin(){await navigator.credentials.get({publicKey:{challenge:crypto.getRandomValues(new Uint8Array(32)),allowCredentials:[{type:"public-key",id:ub64(localStorage.getItem(FID))}],userVerification:"required",timeout:60000}})}
+function FaceCard(){const [on,setOn]=useState(()=>!!localStorage.getItem(FID));const [msg,setMsg]=useState("");
+  if(!fidOk())return null;
+  return html`<div class="card stack" style=${{gap:10}}><h2>Face ID</h2><p class="mut sm">${on?"Ativado. Na tela de entrada, toque em Entrar com Face ID.":"Entre no app usando o rosto, sem digitar a senha."}</p>
+    ${on?html`<button class="btn gh" onClick=${()=>{localStorage.removeItem(FID);setOn(false);setMsg("")}}>Desativar Face ID</button>`
+      :html`<button class="btn" onClick=${async()=>{try{await fidSetup();setOn(true);setMsg("")}catch(e){setMsg("Não foi possível ativar. Tente de novo.")}}}>Ativar Face ID</button>`}
+    ${msg&&html`<div class="bad sm" role="alert">${msg}</div>`}</div>`}
 function Login({onLogin}){
   const [pwd,setPwd]=useState("");const [err,setErr]=useState(false);
   async function ck(e){e.preventDefault();
@@ -452,10 +465,11 @@ function Login({onLogin}){
     if(hex===PASS_HASH){sessionStorage.setItem("luan_ok","1");onLogin()}else setErr(true)}
   return html`<form onSubmit=${ck} style=${{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",padding:20}}>
     <div class="stack" style=${{width:"100%",maxWidth:340}}>
-      <h1>Painel Financeiro</h1>
+      <h1>Marcha</h1>
       <${F} l="Senha"><input class="in" type="password" autoFocus value=${pwd} onChange=${e=>{setPwd(e.target.value);setErr(false)}}/><//>
       ${err&&html`<div class="bad sm" role="alert">Senha incorreta. Tente de novo.</div>`}
       <button class="btn">Entrar</button>
+      ${fidOk()&&localStorage.getItem(FID)&&html`<button type="button" class="btn gh" onClick=${async()=>{try{await fidLogin();sessionStorage.setItem("luan_ok","1");onLogin()}catch(e){setErr(true)}}}>Entrar com Face ID</button>`}
     </div></form>`;
 }
 function Root(){const [a,setA]=useState(()=>sessionStorage.getItem("luan_ok")==="1");return a?html`<${App}/>`:html`<${Login} onLogin=${()=>setA(true)}/>`}
