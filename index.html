@@ -88,7 +88,7 @@ label.f .in{color:#F5F6F8}
 .hero.neg{background:linear-gradient(135deg,#3A0E12,#14181B 70%);border-color:rgba(229,37,47,.45)}.hero.neg .big{color:#FF4B55}
 .pill{background:var(--panel2)}
 .pill.neg{background:rgba(229,37,47,.16);color:#FF6B73}.pill.pos{background:rgba(34,197,94,.16);color:#22C55E}
-.g1{background:linear-gradient(135deg,#E5252F,#8E1119);border:0;color:#fff;--mut:rgba(255,255,255,.85);--ok:#fff;--line:rgba(255,255,255,.18);--panel2:rgba(255,255,255,.16)}
+.card.g1{background:linear-gradient(135deg,#E5252F,#8E1119);border:0;color:#fff;--mut:rgba(255,255,255,.85);--ok:#fff;--line:rgba(255,255,255,.18);--panel2:rgba(255,255,255,.16)}
 .g2{--panel2:#1F2428}
 .chipb{padding:11px 0;flex:1;border-radius:99px;background:var(--panel2);border:1px solid var(--line);font-weight:600;font-size:16px}
 .chipb.nx{background:#E5252F;color:#fff;border-color:#E5252F;--mut:rgba(255,255,255,.85)}
@@ -98,11 +98,11 @@ label.f .in{color:#F5F6F8}
 .brand{font-weight:800;font-style:italic;letter-spacing:-.02em;font-size:16px}.brand b{color:#E5252F;font-size:12px;font-style:italic;margin-left:6px}
 .boom{position:fixed;left:50%;bottom:45%;pointer-events:none;z-index:9}
 .boom span{position:absolute;font-size:30px;animation:fly 1.1s ease-out forwards}
-.foot{text-align:center;margin-top:36px;padding:26px 0 8px;border-top:1px solid var(--line)}
+.foot{text-align:center;margin-top:24px;padding:16px 0 4px;border-top:1px solid var(--line)}
 .wm{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:10px}
-.wmt{font-family:Sora;font-style:italic;font-weight:800;font-size:19px;letter-spacing:-.04em;line-height:1}
+.wmt{font-family:Sora;font-style:italic;font-weight:800;font-size:15px;letter-spacing:-.04em;line-height:1}
 .wms{height:3px;margin:4px 0 0 4px;background:#E5252F;transform:skewX(-30deg);width:70%}
-.wmb{font-size:12px;margin:2px 0 0 44px}.wmb span{color:#E5252F;font-weight:800}
+.wmb{font-size:10px;margin:1px 0 0 34px}.wmb span{color:#E5252F;font-weight:800}
 /* mais vida */
 .card{background:linear-gradient(160deg,#181D21,#121518);box-shadow:0 10px 30px rgba(0,0,0,.35)}
 h2{position:relative;padding-left:12px}h2::before{content:"";position:absolute;left:0;top:.2em;bottom:.2em;width:4px;border-radius:2px;background:#E5252F;transform:skewX(-12deg)}
@@ -128,7 +128,7 @@ button.pill.on{background:#E5252F;color:#fff;border-color:#E5252F}
 <script>
 "use strict";
 /* atualizacao automatica: se houver versao mais nova publicada, recarrega sozinho */
-(function(){const V="24";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V){const k="upd_"+t,n=+(sessionStorage.getItem(k)||0);if(n<3){sessionStorage.setItem(k,n+1);location.replace(location.pathname+"?v="+t+"&r="+Date.now())}}}).catch(()=>{})}
+(function(){const V="26";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V){const k="upd_"+t,n=+(sessionStorage.getItem(k)||0);if(n<3){sessionStorage.setItem(k,n+1);location.replace(location.pathname+"?v="+t+"&r="+Date.now())}}}).catch(()=>{})}
 ck();document.addEventListener("visibilitychange",()=>{if(!document.hidden)ck()})})();
 const {useState,useEffect,useMemo}=React;
 const h=(t,p,...c)=>{if(p&&"class" in p){p=Object.assign({},p,{className:p.class});delete p.class}return React.createElement(t,p,...c)};
@@ -144,7 +144,7 @@ const iD=[
 {id:5,n:"Cartão vó do João",ins:200,rem:4,dd:5,tp:"parcela",lp:"2026-11"},
 {id:6,n:"Cartão tio do João",ins:159,rem:9,dd:15,tp:"parcela",lp:"2026-11"},
 {id:7,n:"Empréstimo Marcelin",ins:300,rem:4,dd:10,tp:"parcela",lp:"2026-11"}];
-const WISH=[{id:1,n:"Honda Africa Twin 1100",v:100000},{id:2,n:"BMW R 1250 GS",v:115000},{id:3,n:"Triumph Tiger Sport 660",v:62000},{id:4,n:"Honda Sahara 300",v:30000},{id:5,n:"Honda CRF 250F",v:25000}];
+const WISH=[{id:1,n:"Honda Africa Twin 1100",v:112000},{id:2,n:"BMW R 1250 GS",v:95000},{id:3,n:"Triumph Tiger Sport 660",v:62000},{id:4,n:"Honda Sahara 300",v:30000},{id:5,n:"Honda CRF 250F",v:25000}];
 const BK=["CB 300R 2013","Titan 160 2022","Sahara 300 2024"];
 const fI=[{n:"G7 Pró-labore",v:2000,d:15},{n:"Luquinha (Spotify)",v:15,d:20},{n:"Yago/Giulio",v:20,d:20}];
 const fE=[{n:"Academia",v:135,c:"saude"},{n:"Luta",v:100,c:"saude"},{n:"Cabelo",v:200,c:"pessoal"},{n:"Boldo",v:200,c:"pessoal"}];
@@ -171,6 +171,11 @@ if(r)localStorage.setItem("luan_debts",JSON.stringify(r.map(d=>d.id===1&&d.lp===
 localStorage.setItem("luan_mig4","1")}}catch(e){}
 try{if(!localStorage.getItem("luan_mig5")){const g=JSON.parse(localStorage.getItem("luan_goal")||"null")||{name:"",target:0,monthly:0,deps:[],bikes:BK,start:Date.now()};
 if(!g.wish){g.wish=WISH;localStorage.setItem("luan_goal",JSON.stringify(g))}localStorage.setItem("luan_mig5","1")}}catch(e){}
+const WISH2=[{id:6,n:"Honda Civic",v:70000,t:"carro"},{id:7,n:"BMW 320i",v:230000,t:"carro"},{id:8,n:"Mercedes GLA 250",v:140000,t:"carro"},{id:9,n:"Range Rover Velar",v:380000,t:"carro"},{id:10,n:"Triumph Tiger 800",v:50000,t:"moto"},{id:11,n:"BMW S 1000 RR",v:95000,t:"moto"},{id:12,n:"Porsche 911",v:1000000,t:"carro"},{id:13,n:"VW Jetta 2.0",v:75000,t:"carro"},{id:14,n:"Jet ski Sea-Doo",v:80000,t:"outro"},{id:15,n:"VW Golf GTI",v:170000,t:"carro"}];
+try{if(!localStorage.getItem("luan_mig6")){const g=JSON.parse(localStorage.getItem("luan_goal")||"null");
+if(g){const w=g.wish||[];WISH2.forEach(x=>{if(!w.some(y=>y.id===x.id))w.push(x)});g.wish=w;localStorage.setItem("luan_goal",JSON.stringify(g))}localStorage.setItem("luan_mig6","1")}}catch(e){}
+try{if(!localStorage.getItem("luan_mig7")){const g=JSON.parse(localStorage.getItem("luan_goal")||"null");const U={1:[100000,112000],2:[115000,95000],8:[160000,140000],11:[110000,95000],12:[900000,1000000]};
+if(g&&g.wish){g.wish=g.wish.map(w=>U[w.id]&&w.v===U[w.id][0]?Object.assign({},w,{v:U[w.id][1]}):w);localStorage.setItem("luan_goal",JSON.stringify(g))}localStorage.setItem("luan_mig7","1")}}catch(e){}
 /* ---------- utilitarios ---------- */
 const fmt=v=>"R$ "+Math.abs(v||0).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
 const sg=v=>(v<0?"- ":"")+fmt(v);
@@ -294,8 +299,8 @@ function Meta({g,save}){
       <div class="row"><h2>Seus sonhos</h2><button class="btn gh s" onClick=${()=>setEdit(!edit)}>${edit?"Concluir":"Editar"}</button></div>
       <p class="mut sm" style=${{margin:"4px 0 14px"}}>Sem pressa e sem prazo. Elas ficam aqui só para lembrar para onde a estrada vai.</p>
       ${edit?html`<div>${wish.map(w=>html`<div key=${w.id} class="flex" style=${{marginBottom:8}}><input class="in" style=${{flex:2,minWidth:0}} aria-label="Modelo" placeholder="modelo" value=${w.n} onChange=${e=>upW(w.id,"n",e.target.value)}/><input class="in" style=${{flex:1,minWidth:0}} type="number" inputMode="decimal" aria-label="Valor em reais" placeholder="valor" value=${w.v||""} onChange=${e=>upW(w.id,"v",num(e.target.value))}/><select class="in" aria-label="Tipo" style=${{flex:"none",width:104,padding:"0 6px"}} value=${w.t||"moto"} onChange=${e=>upW(w.id,"t",e.target.value)}><option value="moto">🏍️ Moto</option><option value="carro">🚗 Carro</option><option value="outro">⭐ Outro</option></select><button class="btn gh s" aria-label=${"Foto de "+w.n} onClick=${()=>pickImg(900,d=>upW(w.id,"img",d))}>${w.img?"✓ Foto":"📷 Foto"}</button><button class="mut" aria-label=${"Remover "+w.n} style=${{padding:"6px 8px"}} onClick=${()=>set("wish",wish.filter(x=>x.id!==w.id))}>✕</button></div>`)}<button class="btn gh s" onClick=${()=>set("wish",wish.concat([{id:Date.now(),n:"",v:0}]))}>Adicionar sonho</button></div>`
-      :html`<div><div class="flex wrapf" style=${{marginBottom:12}}>${[["","Todos"],["moto","🏍️ Motos"],["carro","🚗 Carros"],["outro","⭐ Outros"]].filter(([k])=>!k||wish.some(w=>(w.t||"moto")===k)).map(([k,l])=>html`<button key=${k} class=${"pill"+(ft===k?" on":"")} onClick=${()=>setFt(k)}>${l}</button>`)}</div><div class="scroll">${wish.filter(w=>!ft||(w.t||"moto")===ft).slice().sort((a,b)=>a.v-b.v).map(w=>html`<div key=${w.id} class="bk">${w.img||w.id<=4?html`<img src=${w.img||"w"+w.id+".jpg"} alt=${w.n} loading="lazy"/>`:html`<div class="ph">${{carro:"🚗",outro:"⭐"}[w.t]||"🏍️"}</div>`}<div style=${{fontWeight:600}}>${w.n}</div><span class="mut">${w.v>0&&saved>=w.v?"✓ alcançada":short(w.v)}</span>${w.v>0&&saved<w.v&&html`<div class="bar" style=${{height:6,marginTop:6}}><i style=${{width:Math.max(2,saved/w.v*100)+"%",background:"#E5252F"}}></i></div><span class="mut" style=${{fontSize:12}}>${Math.floor(saved/w.v*100)}% com o que você já guardou</span>`}</div>`)}</div></div>`}
-      <p class="mut" style=${{fontSize:11,marginTop:10}}>Fotos: Cjp24 (CC BY-SA 4.0), Lamb Chop Rides (CC BY 3.0), via Wikimedia Commons.</p>
+      :html`<div><div class="flex wrapf" style=${{marginBottom:12}}>${[["","Todos"],["moto","🏍️ Motos"],["carro","🚗 Carros"],["outro","⭐ Outros"]].filter(([k])=>!k||wish.some(w=>(w.t||"moto")===k)).map(([k,l])=>html`<button key=${k} class=${"pill"+(ft===k?" on":"")} onClick=${()=>setFt(k)}>${l}</button>`)}</div><div class="scroll">${wish.filter(w=>!ft||(w.t||"moto")===ft).slice().sort((a,b)=>a.v-b.v).map(w=>html`<div key=${w.id} class="bk">${w.img||(w.id<=15&&w.id!==5)?html`<img src=${w.img||"w"+w.id+".jpg"} alt=${w.n} loading="lazy"/>`:html`<div class="ph">${{carro:"🚗",outro:"⭐"}[w.t]||"🏍️"}</div>`}<div style=${{fontWeight:600}}>${w.n}</div><span class="mut">${w.v>0&&saved>=w.v?"✓ alcançada":short(w.v)}</span>${w.v>0&&saved<w.v&&html`<div class="bar" style=${{height:6,marginTop:6}}><i style=${{width:Math.max(2,saved/w.v*100)+"%",background:"#E5252F"}}></i></div><span class="mut" style=${{fontSize:12}}>${Math.floor(saved/w.v*100)}% com o que você já guardou</span>`}</div>`)}</div></div>`}
+      <p class="mut" style=${{fontSize:11,marginTop:10}}>Foto da Tiger 660: Lamb Chop Rides (CC BY 3.0), via Wikimedia Commons.</p>
     </div>
     <div class="card">
       <h2>Já passaram pela garagem</h2>
@@ -316,7 +321,7 @@ function App(){
   const [debts,setDebts]=useLS("luan_debts",iD);
   const [incomes,setInc]=useLS("luan_incomes",fI);
   const [fixed,setFix]=useLS("luan_expenses_fixed",fE);
-  const [goal,setGoal]=useLS("luan_goal",{name:"",target:0,monthly:0,deps:[],bikes:BK,wish:WISH,start:Date.now()});
+  const [goal,setGoal]=useLS("luan_goal",{name:"",target:0,monthly:0,deps:[],bikes:BK,wish:WISH.concat(WISH2),start:Date.now()});
   const [cfg,setCfg]=useLS("luan_cfg",{extra:0,sav:300});
   const [ed,setEd]=useState(null);
   const [sel,setSel]=useState(0);
@@ -358,7 +363,7 @@ function App(){
   due.sort((a,b)=>(a.next-b.next)||(a.d.dd-b.d.dd));
   const freeTxt=totD<=0?"Sem dívidas":proj.free===null?"Defina um valor mensal para as dívidas em aberto":"Quitação prevista: "+proj[proj.free].full;
 
-  function backup(){const o={};["luan_exp","luan_debts","luan_incomes","luan_expenses_fixed","luan_goal","luan_cfg","luan_mig1","luan_mig3","luan_mig4","luan_mig5"].forEach(k=>{const v=localStorage.getItem(k);if(v)o[k]=JSON.parse(v)});
+  function backup(){const o={};["luan_exp","luan_debts","luan_incomes","luan_expenses_fixed","luan_goal","luan_cfg","luan_mig1","luan_mig3","luan_mig4","luan_mig5","luan_mig6","luan_mig7"].forEach(k=>{const v=localStorage.getItem(k);if(v)o[k]=JSON.parse(v)});
     const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(o)],{type:"application/json"}));a.download="financeiro-luan-"+dk(Date.now())+".json";a.click()}
   function restore(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);if(!confirm("Substituir os dados atuais pelos do arquivo?"))return;Object.keys(o).filter(k=>k.indexOf("luan_")===0).forEach(k=>localStorage.setItem(k,JSON.stringify(o[k])));location.reload()}catch(x){alert("Arquivo inválido.")}};r.readAsText(f)}
 
@@ -443,9 +448,9 @@ function App(){
     </div>`}
 
     <footer class="foot"><div class="mut sm">Sistema criado por</div>
-      <div class="wm"><svg viewBox="80 80 300 300" width="24" height="24" aria-hidden="true"><path d="M107 149 A180 180 0 0 1 365 149" fill="none" stroke="#A6ADB6" stroke-width="17" stroke-linecap="round" stroke-dasharray="45 13"/><path d="M305 90 A180 180 0 0 1 365 149" fill="none" stroke="#E5252F" stroke-width="17" stroke-linecap="round"/><path d="M92 333 L145 174 L229 266 L307 174 L365 333 L309 333 L287 258 L230 326 L169 257 L148 333 Z" fill="#fff"/><path d="M182 359 L327 359 L294 373 L160 373 Z" fill="#E5252F"/></svg><div><div class="wmt">MARCHA</div><div class="wms"></div></div></div>
+      <div class="wm"><svg viewBox="80 80 300 300" width="18" height="18" aria-hidden="true"><path d="M107 149 A180 180 0 0 1 365 149" fill="none" stroke="#A6ADB6" stroke-width="17" stroke-linecap="round" stroke-dasharray="45 13"/><path d="M305 90 A180 180 0 0 1 365 149" fill="none" stroke="#E5252F" stroke-width="17" stroke-linecap="round"/><path d="M92 333 L145 174 L229 266 L307 174 L365 333 L309 333 L287 258 L230 326 L169 257 L148 333 Z" fill="#fff"/><path d="M182 359 L327 359 L294 373 L160 373 Z" fill="#E5252F"/></svg><div><div class="wmt">MARCHA</div><div class="wms"></div></div></div>
       <div class="wmb">by LC<span>28</span></div>
-      <div class="mut" style=${{fontSize:11,letterSpacing:".28em",marginTop:10}}>FINANÇAS • METAS • CONQUISTAS</div></footer>
+      <div class="mut" style=${{fontSize:9,letterSpacing:".24em",marginTop:6}}>FINANÇAS • METAS • CONQUISTAS</div></footer>
     <nav><div>${[["inicio","Início"],["dividas","Dívidas"],["meta","Cofre"],["plano","Planejar"]].map(t=>html`<button key=${t[0]} class=${tab===t[0]?"on":""} aria-current=${tab===t[0]?"page":null} onClick=${()=>setTab(t[0])}><svg viewBox="0 0 24 24"><path d=${ICON[t[0]]}/></svg><span>${t[1]}</span></button>`)}</div></nav>
   </div>`;
 }
