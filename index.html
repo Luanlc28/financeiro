@@ -162,7 +162,7 @@ nav button{font-size:12px}
 <script>
 "use strict";
 /* atualizacao automatica: se houver versao mais nova publicada, recarrega sozinho */
-const APPV="59";
+const APPV="60";
 function chkVer(){return fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():"").then(t=>{t=t.trim();if(t&&t!==APPV){const k="upd_"+t,n=+(sessionStorage.getItem(k)||0);if(n<3){sessionStorage.setItem(k,n+1);location.replace(location.pathname+"?v="+t+"&r="+Date.now());return true}}return false}).catch(()=>false)}
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)chkVer()});
 const {useState,useEffect,useMemo}=React;
@@ -220,6 +220,8 @@ if(g&&g.wish&&!g.wish.some(x=>x.id===17)){g.wish.push({id:17,n:"Ford Mustang GT"
 const FIPE={"1": 112010, "2": 99791, "3": 57833, "4": 29890, "16": 33301, "5": 19788, "10": 55056, "11": 125300, "6": 71094, "7": 326044, "8": 134794, "9": 250482, "12": 992591, "13": 63812, "15": 204241, "17": 362354, "14": 160000},POS={"2": 65, "3": 60, "6": 66, "7": 62, "8": 86, "9": 62, "10": 58, "11": 62, "12": 68, "13": 72, "14": 76, "15": 66, "17": 76};
 try{if(!localStorage.getItem("luan_mig10")){const g=JSON.parse(localStorage.getItem("luan_goal")||"null");
 if(g&&g.wish){g.wish=g.wish.map(w=>FIPE[w.id]?Object.assign({},w,{v:FIPE[w.id]}):w);localStorage.setItem("luan_goal",JSON.stringify(g))}localStorage.setItem("luan_mig10","1")}}catch(e){}
+try{if(!localStorage.getItem("luan_mig11")){const g=JSON.parse(localStorage.getItem("luan_goal")||"null");
+if(g&&g.wish&&!g.wish.some(x=>x.id===18)){g.wish.push({id:18,n:"San Andrés, Colômbia",t:"viagem",dt:"2027-04",b:{p:3000,h:870,a:0,s:1400,e:2000},v:7270,img:"v18.jpg"});localStorage.setItem("luan_goal",JSON.stringify(g))}localStorage.setItem("luan_mig11","1")}}catch(e){}
 /* ---------- utilitarios ---------- */
 const fmt=v=>"R$ "+Math.abs(v||0).toLocaleString("pt-BR",{minimumFractionDigits:2,maximumFractionDigits:2});
 const sg=v=>(v<0?"- ":"")+fmt(v);
@@ -434,7 +436,7 @@ function App(){
   const [bell,setBell]=useState(false);
   const [bk,setBk]=useState(()=>{try{return +(localStorage.getItem("luan_lastbk")||0)}catch(e){return 0}});
   const sun=(()=>{const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-d.getDay());return +d})(),bkDue=bk<sun;
-  function backup(){const o={};["luan_exp","luan_debts","luan_incomes","luan_expenses_fixed","luan_goal","luan_cfg","luan_mig1","luan_mig3","luan_mig4","luan_mig5","luan_mig6","luan_mig7","luan_mig8","luan_mig9","luan_mig10"].forEach(k=>{const v=localStorage.getItem(k);if(v)o[k]=JSON.parse(v)});
+  function backup(){const o={};["luan_exp","luan_debts","luan_incomes","luan_expenses_fixed","luan_goal","luan_cfg","luan_mig1","luan_mig3","luan_mig4","luan_mig5","luan_mig6","luan_mig7","luan_mig8","luan_mig9","luan_mig10","luan_mig11"].forEach(k=>{const v=localStorage.getItem(k);if(v)o[k]=JSON.parse(v)});
     const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(o)],{type:"application/json"}));a.download="financeiro-luan-"+dk(Date.now())+".json";a.click();try{localStorage.setItem("luan_lastbk",Date.now())}catch(e){}setBk(Date.now())}
   function restore(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);if(!confirm("Substituir os dados atuais pelos do arquivo?"))return;Object.keys(o).filter(k=>k.indexOf("luan_")===0).forEach(k=>localStorage.setItem(k,JSON.stringify(o[k])));location.reload()}catch(x){alert("Arquivo inválido.")}};r.readAsText(f)}
 
