@@ -6,13 +6,13 @@
 <meta name="theme-color" content="#000000">
 <link rel="apple-touch-icon" href="icon.png">
 <link rel="icon" type="image/png" href="icon-512.png">
-<meta name="apple-mobile-web-app-title" content="Financeiro">
+<meta name="apple-mobile-web-app-title" content="Marcha">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<title>Painel Financeiro</title>
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<title>Marcha</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#000;--panel:#101012;--panel2:#1E1E22;--line:#232327;--tx:#fff;--mut:#9A9AA5;--amb:#FF4B2B;--ok:#00E676;--bad:#FF4D6D;--blue:#3D8BFF;--vio:#8B5CF6;--yel:#FFD60A}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -69,31 +69,33 @@ nav button:not(.on) span{display:none}
 input[type=range]{width:100%;accent-color:#fff;height:30px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 
-/* ---- visual claro ---- */
-:root{--bg:#F6F7F5;--panel:#fff;--panel2:#F1F2EF;--line:#E6E7E3;--tx:#111613;--mut:#6B716C;--amb:#23421A;--ok:#178A3E;--bad:#D93A4A;--blue:#2F6BFF}
-body{background:#F6F7F5;font-family:Inter,system-ui,sans-serif;letter-spacing:-.005em}
-:focus-visible{outline:2px solid #23421A}
-h1{font-weight:700;letter-spacing:-.035em}
-.card{border:1px solid var(--line);box-shadow:0 1px 2px rgba(17,22,19,.04)}
-.btn{background:#23421A;color:#fff}.btn.gh{background:#fff;color:#111613;border:1px solid var(--line)}
-.btn.dg{background:#FDECEE}
-nav{background:rgba(255,255,255,.94);backdrop-filter:blur(14px);border-top:1px solid var(--line)}
-nav button.on{background:#23421A;color:#fff}
-input[type=range]{accent-color:#23421A}
-.in{background:#fff;border:1px solid #DADCD7;color:#111613}.in:focus{border-color:#23421A}
-label.f .in{color:#111613}
-.hero{background:#23421A;color:#fff;border:0}.hero .sm{color:#C9DBBE}
-.hero.neg{background:#B3263A;color:#fff}.hero.neg .sm{color:#FBD5DA}
-.pill{border:1px solid var(--line);background:#fff}
-.pill.neg{background:#FDECEE;color:#B3263A;border-color:#F6C9CF}.pill.pos{background:#E9F1FF;color:#2F6BFF;border-color:#D3E2FF}
-.tag{background:#fff;border:1px solid var(--line)}
-.g1{background:#23421A;border:0;color:#fff;--mut:#C9DBBE;--ok:#B8F28B;--line:rgba(255,255,255,.15);--panel2:rgba(255,255,255,.14)}
-.g2{background:#fff;--panel2:#F1F2EF}
-.chipb{padding:11px 0;flex:1;border-radius:99px;background:#fff;border:1px solid #DADCD7;font-weight:600;font-size:16px}
-.chipb.nx{background:#23421A;color:#fff;border-color:#23421A;--mut:#C9DBBE}
+/* ---- MARCHA by LC28 ---- */
+:root{--bg:#0A0A0C;--panel:#14181B;--panel2:#1F2428;--line:#242A2F;--tx:#F5F6F8;--mut:#9AA1A8;--amb:#E5252F;--ok:#22C55E;--bad:#E5252F;--blue:#1A3FD6}
+body{background:#0A0A0C;font-family:Inter,system-ui,sans-serif}
+body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(80% 40% at 100% 0%,rgba(229,37,47,.22),transparent 70%)}
+h1,h2,.big,.mid,.brand{font-family:Sora,Inter,sans-serif}
+h1{font-weight:700;letter-spacing:-.03em}
+:focus-visible{outline:2px solid #E5252F}
+.card{border:1px solid var(--line)}
+.btn{background:#E5252F;color:#fff}.btn.gh{background:var(--panel2);color:#F5F6F8}
+.btn.dg{background:rgba(229,37,47,.14)}
+nav{background:rgba(14,16,18,.96);backdrop-filter:blur(14px);border-top:1px solid var(--line)}
+nav button.on{background:none;color:#E5252F}nav button:not(.on) span{display:block}nav button{flex-direction:column;gap:2px;font-size:11px}
+input[type=range]{accent-color:#E5252F}
+.in{background:#0E1113;border:1px solid #2A3036;color:#F5F6F8}.in:focus{border-color:#E5252F}
+label.f .in{color:#F5F6F8}
+.hero{background:linear-gradient(135deg,#0F2A1A,#14181B 70%);color:#F5F6F8;border:1px solid rgba(34,197,94,.35)}.hero .big{color:#22C55E}.hero .sm{color:#9AA1A8}
+.hero.neg{background:linear-gradient(135deg,#3A0E12,#14181B 70%);border-color:rgba(229,37,47,.45)}.hero.neg .big{color:#FF4B55}
+.pill{background:var(--panel2)}
+.pill.neg{background:rgba(229,37,47,.16);color:#FF6B73}.pill.pos{background:rgba(34,197,94,.16);color:#22C55E}
+.g1{background:linear-gradient(135deg,#E5252F,#8E1119);border:0;color:#fff;--mut:rgba(255,255,255,.85);--ok:#fff;--line:rgba(255,255,255,.18);--panel2:rgba(255,255,255,.16)}
+.g2{--panel2:#1F2428}
+.chipb{padding:11px 0;flex:1;border-radius:99px;background:var(--panel2);border:1px solid var(--line);font-weight:600;font-size:16px}
+.chipb.nx{background:#E5252F;color:#fff;border-color:#E5252F;--mut:rgba(255,255,255,.85)}
 .bk{flex:0 0 230px}
-.bk img,.bk .ph{width:230px;height:172px;object-fit:cover;background:#F1F2EF;border-radius:22px;border:1px solid var(--line)}
-.bk .ph{border-style:dashed;color:#23421A}
+.bk img,.bk .ph{width:230px;height:172px;object-fit:cover;background:#1F2428;border-radius:20px;border:1px solid var(--line)}
+.bk .ph{border-style:dashed;color:#E5252F}
+.brand{font-weight:800;font-style:italic;letter-spacing:-.02em;font-size:20px}.brand b{color:#E5252F;font-size:12px;font-style:italic;margin-left:6px}
 .boom{position:fixed;left:50%;bottom:45%;pointer-events:none;z-index:9}
 .boom span{position:absolute;font-size:30px;animation:fly 1.1s ease-out forwards}
 @keyframes fly{to{transform:translate(var(--x),var(--y)) rotate(var(--r));opacity:0}}
@@ -108,7 +110,7 @@ label.f .in{color:#111613}
 <script>
 "use strict";
 /* atualizacao automatica: se houver versao mais nova publicada, recarrega sozinho */
-(function(){const V="12";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V&&new URLSearchParams(location.search).get("v")!==t)location.replace(location.pathname+"?v="+t)}).catch(()=>{})}
+(function(){const V="13";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V&&new URLSearchParams(location.search).get("v")!==t)location.replace(location.pathname+"?v="+t)}).catch(()=>{})}
 ck();document.addEventListener("visibilitychange",()=>{if(!document.hidden)ck()})})();
 const {useState,useEffect,useMemo}=React;
 const h=(t,p,...c)=>{if(p&&"class" in p){p=Object.assign({},p,{className:p.class});delete p.class}return React.createElement(t,p,...c)};
@@ -174,16 +176,16 @@ function Gauge({pct}){
   const arc=(a1,a2)=>{const a=pt(a1,86),b=pt(a2,86);return `M${a[0]} ${a[1]}A86 86 0 ${a2-a1>180?1:0} 1 ${b[0]} ${b[1]}`};
   const [ang,setAng]=useState(A);
   useEffect(()=>{const t=setTimeout(()=>setAng(A+S*p/100),80);return()=>clearTimeout(t)},[p]);
-  const ticks=[];for(let i=0;i<=20;i++){const a=A+S*i/20,m=i%5===0,x=pt(a,m?68:73),y=pt(a,78);ticks.push(html`<line key=${i} x1=${x[0]} y1=${x[1]} x2=${y[0]} y2=${y[1]} stroke=${m?"#111613":"#C9CCC6"} stroke-width=${m?2:1}/>`)}
+  const ticks=[];for(let i=0;i<=20;i++){const a=A+S*i/20,m=i%5===0,x=pt(a,m?68:73),y=pt(a,78);ticks.push(html`<line key=${i} x1=${x[0]} y1=${x[1]} x2=${y[0]} y2=${y[1]} stroke=${m?"#F5F6F8":"#3A4046"} stroke-width=${m?2:1}/>`)}
   return html`<svg viewBox="0 0 200 158" role="img" aria-label=${"Meta "+p.toFixed(0)+"% concluída"} style=${{width:"100%",maxWidth:320,display:"block",margin:"0 auto"}}>
-    <defs><linearGradient id="gg" x1="0" x2="1"><stop offset="0" stop-color="#9BE15D"/><stop offset="1" stop-color="#23421A"/></linearGradient></defs>
-    <path d=${arc(A,A+S)} fill="none" stroke="#ECEDE9" stroke-width="9" stroke-linecap="round"/>
+    <defs><linearGradient id="gg" x1="0" x2="1"><stop offset="0" stop-color="#16A34A"/><stop offset="1" stop-color="#22C55E"/></linearGradient></defs>
+    <path d=${arc(A,A+S)} fill="none" stroke="#22272B" stroke-width="9" stroke-linecap="round"/>
     ${p>0&&html`<path d=${arc(A,A+S*p/100)} fill="none" stroke="url(#gg)" stroke-width="9" stroke-linecap="round"/>`}
     ${ticks}
     ${[0,25,50,75,100].map(v=>{const q=pt(A+S*v/100,56);return html`<text key=${v} x=${q[0]} y=${q[1]+3} text-anchor="middle" font-size="9" fill="#939AA3" font-family="Inter">${v}</text>`})}
-    <g class="needle" style=${{transform:"rotate("+ang+"deg)"}}><line x1="88" y1="100" x2="164" y2="100" stroke="#111613" stroke-width="3" stroke-linecap="round"/></g>
-    <circle cx="100" cy="100" r="6" fill="#111613"/>
-    <text x="100" y="148" text-anchor="middle" font-size="30" font-weight="700" fill="#111613" font-family="Inter">${p.toFixed(p<10&&p>0?1:0)}%</text>
+    <g class="needle" style=${{transform:"rotate("+ang+"deg)"}}><line x1="88" y1="100" x2="164" y2="100" stroke="#F5F6F8" stroke-width="3" stroke-linecap="round"/></g>
+    <circle cx="100" cy="100" r="6" fill="#F5F6F8"/>
+    <text x="100" y="148" text-anchor="middle" font-size="30" font-weight="700" fill="#F5F6F8" font-family="Inter">${p.toFixed(p<10&&p>0?1:0)}%</text>
   </svg>`;
 }
 
@@ -210,10 +212,10 @@ function EditList({title,items,save,blank,sign,day,cur}){
 function Donut({parts,label}){
   const r=46,C=2*Math.PI*r,tot=Math.max(1,parts.reduce((s,p)=>s+p[0],0));let off=0;
   return html`<svg viewBox="0 0 120 120" style=${{width:130,flex:"none"}} role="img" aria-label="Divisão da receita">
-    <circle cx="60" cy="60" r=${r} fill="none" stroke="#ECEDE9" stroke-width="14"/>
+    <circle cx="60" cy="60" r=${r} fill="none" stroke="#22272B" stroke-width="14"/>
     ${parts.map((p,i)=>{const len=p[0]/tot*C,el=html`<circle key=${i} cx="60" cy="60" r=${r} fill="none" stroke=${p[1]} stroke-width="14" stroke-dasharray=${Math.max(0,len-2)+" "+C} stroke-dashoffset=${-off} transform="rotate(-90 60 60)"/>`;off+=len;return el})}
     <text x="60" y="56" text-anchor="middle" font-size="10" fill="#9A9AA5">receita</text>
-    <text x="60" y="71" text-anchor="middle" font-size="13" font-weight="700" fill="#111613">${label}</text></svg>`;
+    <text x="60" y="71" text-anchor="middle" font-size="13" font-weight="700" fill="#F5F6F8">${label}</text></svg>`;
 }
 
 /* ---------- meta: a proxima moto ---------- */
@@ -259,7 +261,7 @@ function Meta({g,save}){
     </div>
     <div class="card g2">
       <div class="row"><h2>Meta de ${MF[new Date().getMonth()].toLowerCase()}</h2><span class="num mid">${mp.toFixed(0)}%</span></div>
-      <div class="bar" style=${{margin:"12px 0 8px",height:14}}><i style=${{width:mp+"%",background:"#23421A"}}></i></div>
+      <div class="bar" style=${{margin:"12px 0 8px",height:14}}><i style=${{width:mp+"%",background:"#fff"}}></i></div>
       <div class="sm" style=${{marginBottom:12}}>${!(g.monthly>0)?"Escolha quanto quer guardar por mês. Pode ser pouco: o que vale é bater.":month>=g.monthly?"Meta do mês batida 🎉 O que entrar agora é bônus.":fmt(Math.max(0,month))+" de "+fmt(g.monthly)+". Faltam "+fmt(g.monthly-Math.max(0,month))+"."}</div>
       <${F} l="Quanto quero guardar por mês (R$)"><${N} v=${g.monthly} on=${x=>set("monthly",x)}/><//>
     </div>
@@ -359,7 +361,7 @@ function App(){
 
   const yv=proj.map(p=>p.bal),hi=Math.max(0,...yv),lo=Math.min(0,...yv),rg=(hi-lo)||1,zero=hi/rg*100;
   return html`<div class="wrap">
-    <div class="top"><div><div class="mut sm">${MF[now.getMonth()]} de ${now.getFullYear()}</div><h1>${{inicio:"Olá, Luan",gastos:"Gastos",dividas:"Dívidas",meta:"Seu cofre",plano:"Planejamento"}[tab]}</h1></div></div>
+    <div class="top"><div><div class="brand" style=${{marginBottom:14}}>MARCHA<b>by LC28</b></div><div class="mut sm">${MF[now.getMonth()]} de ${now.getFullYear()}</div><h1>${{inicio:"Olá, Luan",gastos:"Gastos",dividas:"Dívidas",meta:"Seu cofre",plano:"Planejamento"}[tab]}</h1></div></div>
 
     ${tab==="inicio"&&html`<div class="stack">
       <div class=${"card hero"+(real<0?" neg":"")}>
@@ -417,7 +419,7 @@ function App(){
         <label class="btn gh" style=${{flex:1,textAlign:"center",cursor:"pointer"}}>Restaurar backup<input type="file" accept="application/json" hidden onChange=${restore}/></label></div></div>
     </div>`}
 
-    <p class="mut sm" style=${{textAlign:"center",marginTop:24}}>versão 12</p>
+    <p class="mut sm" style=${{textAlign:"center",marginTop:24}}>MARCHA by LC28 · finanças, metas, conquistas</p>
     <nav><div>${[["inicio","Início"],["dividas","Dívidas"],["meta","Cofre"],["plano","Planejar"]].map(t=>html`<button key=${t[0]} class=${tab===t[0]?"on":""} aria-current=${tab===t[0]?"page":null} onClick=${()=>setTab(t[0])}><svg viewBox="0 0 24 24"><path d=${ICON[t[0]]}/></svg><span>${t[1]}</span></button>`)}</div></nav>
   </div>`;
 }
