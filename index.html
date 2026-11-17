@@ -119,6 +119,7 @@ button.pill.on{background:#E5252F;color:#fff;border-color:#E5252F}
 .card .flex>button.pill{font-size:12px;padding:5px 9px;white-space:nowrap}
 .flag{position:absolute;top:8px;right:8px;width:34px;height:34px;border-radius:50%;background:rgba(10,10,12,.7);backdrop-filter:blur(6px);font-size:16px;display:flex;align-items:center;justify-content:center;z-index:1}
 .quote{font-size:15px;font-style:italic;color:var(--mut);padding:2px 4px 0;border-left:3px solid #E5252F;padding-left:12px}
+.bkwarn{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px 10px 16px;border:1px solid rgba(229,37,47,.4);background:rgba(229,37,47,.08);border-radius:99px;font-size:13px}
 @keyframes fly{to{transform:translate(var(--x),var(--y)) rotate(var(--r));opacity:0}}
 @media (prefers-reduced-motion:reduce){.boom{display:none}}
 </style>
@@ -131,7 +132,7 @@ button.pill.on{background:#E5252F;color:#fff;border-color:#E5252F}
 <script>
 "use strict";
 /* atualizacao automatica: se houver versao mais nova publicada, recarrega sozinho */
-(function(){const V="34";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V){const k="upd_"+t,n=+(sessionStorage.getItem(k)||0);if(n<3){sessionStorage.setItem(k,n+1);location.replace(location.pathname+"?v="+t+"&r="+Date.now())}}}).catch(()=>{})}
+(function(){const V="35";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V){const k="upd_"+t,n=+(sessionStorage.getItem(k)||0);if(n<3){sessionStorage.setItem(k,n+1);location.replace(location.pathname+"?v="+t+"&r="+Date.now())}}}).catch(()=>{})}
 ck();document.addEventListener("visibilitychange",()=>{if(!document.hidden)ck()})})();
 const {useState,useEffect,useMemo}=React;
 const h=(t,p,...c)=>{if(p&&"class" in p){p=Object.assign({},p,{className:p.class});delete p.class}return React.createElement(t,p,...c)};
@@ -370,8 +371,9 @@ function App(){
   due.sort((a,b)=>(a.next-b.next)||(a.d.dd-b.d.dd));
   const freeTxt=totD<=0?"Sem dívidas":proj.free===null?"Defina um valor mensal para as dívidas em aberto":"Quitação prevista: "+proj[proj.free].full;
 
+  const [bk,setBk]=useState(()=>{try{return +(localStorage.getItem("luan_lastbk")||0)}catch(e){return 0}});
   function backup(){const o={};["luan_exp","luan_debts","luan_incomes","luan_expenses_fixed","luan_goal","luan_cfg","luan_mig1","luan_mig3","luan_mig4","luan_mig5","luan_mig6","luan_mig7","luan_mig8"].forEach(k=>{const v=localStorage.getItem(k);if(v)o[k]=JSON.parse(v)});
-    const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(o)],{type:"application/json"}));a.download="financeiro-luan-"+dk(Date.now())+".json";a.click()}
+    const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(o)],{type:"application/json"}));a.download="financeiro-luan-"+dk(Date.now())+".json";a.click();try{localStorage.setItem("luan_lastbk",Date.now())}catch(e){}setBk(Date.now())}
   function restore(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);if(!confirm("Substituir os dados atuais pelos do arquivo?"))return;Object.keys(o).filter(k=>k.indexOf("luan_")===0).forEach(k=>localStorage.setItem(k,JSON.stringify(o[k])));location.reload()}catch(x){alert("Arquivo inválido.")}};r.readAsText(f)}
 
   const debtCard=d=>{const par=d.tp==="parcela",open=ed===d.id,val=par?d.ins*d.rem:(d.total||0);
@@ -398,6 +400,7 @@ function App(){
     <div class="top"><div><div class="brand" style=${{marginBottom:14,display:"flex",alignItems:"center",gap:8}}><svg viewBox="80 80 300 300" width="22" height="22" aria-hidden="true"><path d="M107 149 A180 180 0 0 1 365 149" fill="none" stroke="#A6ADB6" stroke-width="17" stroke-linecap="round" stroke-dasharray="45 13"/><path d="M305 90 A180 180 0 0 1 365 149" fill="none" stroke="#E5252F" stroke-width="17" stroke-linecap="round"/><path d="M92 333 L145 174 L229 266 L307 174 L365 333 L309 333 L287 258 L230 326 L169 257 L148 333 Z" fill="#fff"/><path d="M182 359 L327 359 L294 373 L160 373 Z" fill="#E5252F"/></svg><span>MARCHA</span><b style=${{color:"#F5F6F8",fontWeight:400,fontStyle:"normal",fontFamily:"Inter"}}>by LC<span style=${{color:"#E5252F",fontWeight:800}}>28</span></b></div><div class="mut sm">${MF[now.getMonth()]} de ${now.getFullYear()}</div><h1>${{inicio:"Olá, Luan",gastos:"Gastos",dividas:"Dívidas",meta:"Seu cofre",plano:"Planejamento"}[tab]}</h1></div><div class="flex" style=${{alignSelf:"flex-start"}}><button class="btn gh s" aria-label="Atualizar app" onClick=${()=>location.replace(location.pathname+"?v="+Date.now())}>↻</button><button class="btn gh s" onClick=${()=>{sessionStorage.removeItem("luan_ok");location.reload()}}>Sair</button></div></div>
 
     ${tab==="inicio"&&html`<div class="stack">
+      ${Date.now()-bk>6048e5&&html`<div class="bkwarn"><span>💾 ${bk?"Faz "+Math.floor((Date.now()-bk)/864e5)+" dias sem backup":"Você ainda não fez backup"}</span><button class="btn s" onClick=${backup}>Fazer agora</button></div>`}
       <p class="quote">“${FR[Math.floor((Date.now()-new Date(new Date().getFullYear(),0,0))/864e5+15*99-321)%FR.length]}”</p>
       <div class=${"card hero"+(real<0?" neg":"")}>
         <div class="row"><span class="sm">Sobra real deste mês</span><span class=${"pill "+(real<0?"neg":"pos")}>${real<0?"no vermelho":"no azul"}</span></div>
