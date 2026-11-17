@@ -127,7 +127,7 @@ nav button.on svg{filter:drop-shadow(0 0 6px rgba(229,37,47,.7))}
 <script>
 "use strict";
 /* atualizacao automatica: se houver versao mais nova publicada, recarrega sozinho */
-(function(){const V="20";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V&&new URLSearchParams(location.search).get("v")!==t)location.replace(location.pathname+"?v="+t)}).catch(()=>{})}
+(function(){const V="21";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V&&new URLSearchParams(location.search).get("v")!==t)location.replace(location.pathname+"?v="+t)}).catch(()=>{})}
 ck();document.addEventListener("visibilitychange",()=>{if(!document.hidden)ck()})})();
 const {useState,useEffect,useMemo}=React;
 const h=(t,p,...c)=>{if(p&&"class" in p){p=Object.assign({},p,{className:p.class});delete p.class}return React.createElement(t,p,...c)};
@@ -382,7 +382,7 @@ function App(){
 
   const yv=proj.map(p=>p.bal),hi=Math.max(0,...yv),lo=Math.min(0,...yv),rg=(hi-lo)||1,zero=hi/rg*100;
   return html`<div class="wrap">
-    <div class="top"><div><div class="brand" style=${{marginBottom:14,display:"flex",alignItems:"center",gap:8}}><svg viewBox="80 80 300 300" width="22" height="22" aria-hidden="true"><path d="M107 149 A180 180 0 0 1 365 149" fill="none" stroke="#A6ADB6" stroke-width="17" stroke-linecap="round" stroke-dasharray="45 13"/><path d="M305 90 A180 180 0 0 1 365 149" fill="none" stroke="#E5252F" stroke-width="17" stroke-linecap="round"/><path d="M92 333 L145 174 L229 266 L307 174 L365 333 L309 333 L287 258 L230 326 L169 257 L148 333 Z" fill="#fff"/><path d="M182 359 L327 359 L294 373 L160 373 Z" fill="#E5252F"/></svg><span>MARCHA</span><b style=${{color:"#F5F6F8",fontWeight:400,fontStyle:"normal",fontFamily:"Inter"}}>by LC<span style=${{color:"#E5252F",fontWeight:800}}>28</span></b></div><div class="mut sm">${MF[now.getMonth()]} de ${now.getFullYear()}</div><h1>${{inicio:"Olá, Luan",gastos:"Gastos",dividas:"Dívidas",meta:"Seu cofre",plano:"Planejamento"}[tab]}</h1></div></div>
+    <div class="top"><div><div class="brand" style=${{marginBottom:14,display:"flex",alignItems:"center",gap:8}}><svg viewBox="80 80 300 300" width="22" height="22" aria-hidden="true"><path d="M107 149 A180 180 0 0 1 365 149" fill="none" stroke="#A6ADB6" stroke-width="17" stroke-linecap="round" stroke-dasharray="45 13"/><path d="M305 90 A180 180 0 0 1 365 149" fill="none" stroke="#E5252F" stroke-width="17" stroke-linecap="round"/><path d="M92 333 L145 174 L229 266 L307 174 L365 333 L309 333 L287 258 L230 326 L169 257 L148 333 Z" fill="#fff"/><path d="M182 359 L327 359 L294 373 L160 373 Z" fill="#E5252F"/></svg><span>MARCHA</span><b style=${{color:"#F5F6F8",fontWeight:400,fontStyle:"normal",fontFamily:"Inter"}}>by LC<span style=${{color:"#E5252F",fontWeight:800}}>28</span></b></div><div class="mut sm">${MF[now.getMonth()]} de ${now.getFullYear()}</div><h1>${{inicio:"Olá, Luan",gastos:"Gastos",dividas:"Dívidas",meta:"Seu cofre",plano:"Planejamento"}[tab]}</h1></div><div class="flex" style=${{alignSelf:"flex-start"}}><button class="btn gh s" aria-label="Atualizar app" onClick=${()=>location.replace(location.pathname+"?v="+Date.now())}>↻</button><button class="btn gh s" onClick=${()=>{sessionStorage.removeItem("luan_ok");location.reload()}}>Sair</button></div></div>
 
     ${tab==="inicio"&&html`<div class="stack">
       <div class=${"card hero"+(real<0?" neg":"")}>
