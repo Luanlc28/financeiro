@@ -118,6 +118,7 @@ nav button.on svg{filter:drop-shadow(0 0 6px rgba(229,37,47,.7))}
 button.pill.on{background:#E5252F;color:#fff;border-color:#E5252F}
 .card .flex>button.pill{font-size:12px;padding:5px 9px;white-space:nowrap}
 .flag{position:absolute;top:8px;right:8px;width:34px;height:34px;border-radius:50%;background:rgba(10,10,12,.7);backdrop-filter:blur(6px);font-size:16px;display:flex;align-items:center;justify-content:center;z-index:1}
+.quote{font-size:15px;font-style:italic;color:var(--mut);padding:2px 4px 0;border-left:3px solid #E5252F;padding-left:12px}
 @keyframes fly{to{transform:translate(var(--x),var(--y)) rotate(var(--r));opacity:0}}
 @media (prefers-reduced-motion:reduce){.boom{display:none}}
 </style>
@@ -130,7 +131,7 @@ button.pill.on{background:#E5252F;color:#fff;border-color:#E5252F}
 <script>
 "use strict";
 /* atualizacao automatica: se houver versao mais nova publicada, recarrega sozinho */
-(function(){const V="31";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V){const k="upd_"+t,n=+(sessionStorage.getItem(k)||0);if(n<3){sessionStorage.setItem(k,n+1);location.replace(location.pathname+"?v="+t+"&r="+Date.now())}}}).catch(()=>{})}
+(function(){const V="32";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V){const k="upd_"+t,n=+(sessionStorage.getItem(k)||0);if(n<3){sessionStorage.setItem(k,n+1);location.replace(location.pathname+"?v="+t+"&r="+Date.now())}}}).catch(()=>{})}
 ck();document.addEventListener("visibilitychange",()=>{if(!document.hidden)ck()})})();
 const {useState,useEffect,useMemo}=React;
 const h=(t,p,...c)=>{if(p&&"class" in p){p=Object.assign({},p,{className:p.class});delete p.class}return React.createElement(t,p,...c)};
@@ -319,6 +320,7 @@ function pickImg(max,cb){const i=document.createElement("input");i.type="file";i
   i.onchange=()=>{const f=i.files&&i.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{
     const k=Math.min(1,max/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);
     c.getContext("2d").drawImage(im,0,0,c.width,c.height);try{cb(c.toDataURL("image/jpeg",.75))}catch(e){alert("Não deu para salvar a imagem. Tente uma menor.")}};im.src=r.result};r.readAsDataURL(f)};i.click()}
+const FR=["O pouco com Deus é muito.","Devagar também é marcha. O importante é não parar.","Cada real guardado hoje é liberdade amanhã.","Quem é fiel no pouco, também é fiel no muito.","Disciplina hoje, conquista amanhã.","Não é sobre ter muito, é sobre saber cuidar do que tem.","Uma parcela a menos é uma vitória a mais.","Entrega o teu caminho ao Senhor, e Ele tudo fará.","Paciência na estrada: toda curva leva a algum lugar.","Constância vence talento quando o talento não é constante.","Mais vale o pouco bem cuidado do que o muito desperdiçado.","Sonho grande se paga em pequenas parcelas de esforço.","Deus no comando, você no guidão.","Guardar também é um jeito de agradecer.","A pressa passa, a conquista fica."];
 /* ---------- app ---------- */
 const ICON={inicio:"M3 11l9-8 9 8M5 10v10h14V10",gastos:"M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6",dividas:"M3 6h18v12H3zM3 10h18",meta:"M4 18a9 9 0 1116 0M12 14l4-5",plano:"M4 20V10M10 20V4M16 20v-7M21 20H3"};
 function App(){
@@ -397,21 +399,22 @@ function App(){
     <div class="top"><div><div class="brand" style=${{marginBottom:14,display:"flex",alignItems:"center",gap:8}}><svg viewBox="80 80 300 300" width="22" height="22" aria-hidden="true"><path d="M107 149 A180 180 0 0 1 365 149" fill="none" stroke="#A6ADB6" stroke-width="17" stroke-linecap="round" stroke-dasharray="45 13"/><path d="M305 90 A180 180 0 0 1 365 149" fill="none" stroke="#E5252F" stroke-width="17" stroke-linecap="round"/><path d="M92 333 L145 174 L229 266 L307 174 L365 333 L309 333 L287 258 L230 326 L169 257 L148 333 Z" fill="#fff"/><path d="M182 359 L327 359 L294 373 L160 373 Z" fill="#E5252F"/></svg><span>MARCHA</span><b style=${{color:"#F5F6F8",fontWeight:400,fontStyle:"normal",fontFamily:"Inter"}}>by LC<span style=${{color:"#E5252F",fontWeight:800}}>28</span></b></div><div class="mut sm">${MF[now.getMonth()]} de ${now.getFullYear()}</div><h1>${{inicio:"Olá, Luan",gastos:"Gastos",dividas:"Dívidas",meta:"Seu cofre",plano:"Planejamento"}[tab]}</h1></div><div class="flex" style=${{alignSelf:"flex-start"}}><button class="btn gh s" aria-label="Atualizar app" onClick=${()=>location.replace(location.pathname+"?v="+Date.now())}>↻</button><button class="btn gh s" onClick=${()=>{sessionStorage.removeItem("luan_ok");location.reload()}}>Sair</button></div></div>
 
     ${tab==="inicio"&&html`<div class="stack">
+      <p class="quote">“${FR[Math.floor((Date.now()-new Date(new Date().getFullYear(),0,0))/864e5+15*99-321)%FR.length]}”</p>
       <div class=${"card hero"+(real<0?" neg":"")}>
         <div class="row"><span class="sm">Sobra real deste mês</span><span class=${"pill "+(real<0?"neg":"pos")}>${real<0?"no vermelho":"no azul"}</span></div>
         <div class="big" style=${{margin:"12px 0 8px"}}>${sg(real)}</div>
         <div class="sm">${real<0?"Este mês as contas passam da sua receita.":"É o que sobra depois das fixas e das dívidas."}</div>
+      </div>
+      <${EditList} title="Receitas" items=${incomes} save=${setInc} blank=${{n:"Nova receita",v:0,d:15}} sign=${1} day=${true} cur=${cur}/>
+      <${EditList} title="Despesas fixas" items=${fixed} save=${setFix} blank=${{n:"Nova despesa",v:0,c:"pessoal"}}/>
+      <div class="card"><div class="row"><h2>Próximos vencimentos</h2><span class="mut sm">${fmt(totD)} em dívidas</span></div>
+        ${due.length===0?html`<p class="mut sm" style=${{marginTop:8}}>Tudo pago este mês.</p>`:due.map(x=>{const d=x.d;return html`<div key=${d.id} class="item row"><span>${d.n} <span class=${"sm "+(!x.next&&d.dd<day?"bad":"mut")}>${x.next?"vence "+p2(d.dd)+nmL:d.dd<day?"venceu dia "+d.dd:d.dd===day?"vence hoje":"dia "+d.dd}</span></span><span class="flex" style=${{alignItems:"center",gap:10,flex:"none"}}><span class="num" style=${{fontSize:18}}>${fmt(d.tp==="parcela"?d.ins:d.total)}</span>${!x.next&&html`<button class="btn s" aria-label=${"Marcar "+d.n+" como paga"} onClick=${()=>pay(d)}>Paguei</button>`}</span></div>`})}
       </div>
       <div class="card"><h2>Para onde vai sua receita</h2>
         <div class="flex" style=${{alignItems:"center",gap:18,marginTop:14}}>
           <${Donut} parts=${[[totF,"#3B6BFF"],[c0.pay,"#E5252F"],[Math.max(0,real),"#22C55E"]]} label=${fmt(totI)}/>
           <div class="stack" style=${{gap:10,flex:1}}>${[["Fixas",totF,"#3B6BFF"],["Dívidas do mês",c0.pay,"#E5252F"],["Sobra",Math.max(0,real),"#22C55E"]].map(x=>html`<div key=${x[0]}><div class="mut sm"><i class="dot" style=${{background:x[2]}}></i>${x[0]}</div><div class="num" style=${{fontSize:18,fontWeight:600}}>${fmt(x[1])}</div></div>`)}</div>
         </div></div>
-      <div class="card"><div class="row"><h2>Próximos vencimentos</h2><span class="mut sm">${fmt(totD)} em dívidas</span></div>
-        ${due.length===0?html`<p class="mut sm" style=${{marginTop:8}}>Tudo pago este mês.</p>`:due.map(x=>{const d=x.d;return html`<div key=${d.id} class="item row"><span>${d.n} <span class=${"sm "+(!x.next&&d.dd<day?"bad":"mut")}>${x.next?"vence "+p2(d.dd)+nmL:d.dd<day?"venceu dia "+d.dd:d.dd===day?"vence hoje":"dia "+d.dd}</span></span><span class="flex" style=${{alignItems:"center",gap:10,flex:"none"}}><span class="num" style=${{fontSize:18}}>${fmt(d.tp==="parcela"?d.ins:d.total)}</span>${!x.next&&html`<button class="btn s" aria-label=${"Marcar "+d.n+" como paga"} onClick=${()=>pay(d)}>Paguei</button>`}</span></div>`})}
-      </div>
-      <${EditList} title="Receitas" items=${incomes} save=${setInc} blank=${{n:"Nova receita",v:0,d:15}} sign=${1} day=${true} cur=${cur}/>
-      <${EditList} title="Despesas fixas" items=${fixed} save=${setFix} blank=${{n:"Nova despesa",v:0,c:"pessoal"}}/>
     </div>`}
 
 
