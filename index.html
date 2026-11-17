@@ -2,6 +2,9 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#000000">
 <link rel="apple-touch-icon" href="icon.png?v=16">
@@ -151,8 +154,9 @@ body:has(.lg)::before{display:none}
 <script>
 "use strict";
 /* atualizacao automatica: se houver versao mais nova publicada, recarrega sozinho */
-(function(){const V="53";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V){const k="upd_"+t,n=+(sessionStorage.getItem(k)||0);if(n<3){sessionStorage.setItem(k,n+1);location.replace(location.pathname+"?v="+t+"&r="+Date.now())}}}).catch(()=>{})}
-ck();document.addEventListener("visibilitychange",()=>{if(!document.hidden)ck()})})();
+const APPV="54";
+function chkVer(){return fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():"").then(t=>{t=t.trim();if(t&&t!==APPV){const k="upd_"+t,n=+(sessionStorage.getItem(k)||0);if(n<3){sessionStorage.setItem(k,n+1);location.replace(location.pathname+"?v="+t+"&r="+Date.now());return true}}return false}).catch(()=>false)}
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)chkVer()});
 const {useState,useEffect,useMemo}=React;
 const h=(t,p,...c)=>{if(p&&"class" in p){p=Object.assign({},p,{className:p.class});delete p.class}return React.createElement(t,p,...c)};
 const html=htm.bind(h);
@@ -353,7 +357,7 @@ const CR={};
 const VS=[["O Senhor é o meu pastor; nada me faltará. Deitar-me faz em verdes pastos, guia-me mansamente a águas tranquilas.", "Salmos 23:1-2"], ["Tudo posso naquele que me fortalece.", "Filipenses 4:13"], ["Entrega o teu caminho ao Senhor; confia nele, e ele tudo fará.", "Salmos 37:5"], ["Os pensamentos do diligente tendem só à abundância, porém os de todo apressado, tão somente à pobreza.", "Provérbios 21:5"], ["Buscai primeiro o Reino de Deus e a sua justiça, e todas essas coisas vos serão acrescentadas.", "Mateus 6:33"], ["Não estejais inquietos por coisa alguma; antes, as vossas petições sejam em tudo conhecidas diante de Deus, pela oração e súplica, com ação de graças.", "Filipenses 4:6"], ["Esforça-te e tem bom ânimo; não pasmes, nem te espantes, porque o Senhor, teu Deus, é contigo por onde quer que andares.", "Josué 1:9"], ["Melhor é o pouco com o temor do Senhor do que um grande tesouro onde há inquietação.", "Provérbios 15:16"], ["Confia no Senhor de todo o teu coração e não te estribes no teu próprio entendimento. Reconhece-o em todos os teus caminhos, e ele endireitará as tuas veredas.", "Provérbios 3:5-6"], ["Deus é o nosso refúgio e fortaleza, socorro bem presente na angústia.", "Salmos 46:1"], ["Confia ao Senhor as tuas obras, e teus pensamentos serão estabelecidos.", "Provérbios 16:3"], ["Alegrai-vos na esperança, sede pacientes na tribulação, perseverai na oração.", "Romanos 12:12"], ["O Senhor pelejará por vós, e vós vos calareis.", "Êxodo 14:14"], ["Lança o teu cuidado sobre o Senhor, e ele te susterá; nunca permitirá que o justo seja abalado.", "Salmos 55:22"], ["Quem é fiel no mínimo também é fiel no muito; quem é injusto no mínimo também é injusto no muito.", "Lucas 16:10"], ["Honra ao Senhor com a tua fazenda e com as primícias de toda a tua renda; e se encherão os teus celeiros abundantemente.", "Provérbios 3:9-10"], ["A bênção do Senhor é que enriquece, e ele não acrescenta dores.", "Provérbios 10:22"], ["Os que esperam no Senhor renovarão as suas forças; subirão com asas como águias; correrão e não se cansarão; caminharão e não se fatigarão.", "Isaías 40:31"], ["Esforçai-vos, e ele fortalecerá o vosso coração, vós todos que esperais no Senhor.", "Salmos 31:24"], ["Porque eu bem sei os pensamentos que penso de vós, diz o Senhor; pensamentos de paz e não de mal, para vos dar o fim que esperais.", "Jeremias 29:11"], ["E sabemos que todas as coisas contribuem juntamente para o bem daqueles que amam a Deus.", "Romanos 8:28"]];
 const FR=["O pouco com Deus é muito.","Devagar também é marcha. O importante é não parar.","Cada real guardado hoje é liberdade amanhã.","Quem é fiel no pouco, também é fiel no muito.","Disciplina hoje, conquista amanhã.","Não é sobre ter muito, é sobre saber cuidar do que tem.","Uma parcela a menos é uma vitória a mais.","Entrega o teu caminho ao Senhor, e Ele tudo fará.","Paciência na estrada: toda curva leva a algum lugar.","Constância vence talento quando o talento não é constante.","Mais vale o pouco bem cuidado do que o muito desperdiçado.","Sonho grande se paga em pequenas parcelas de esforço.","Deus no comando, você no guidão.","Guardar também é um jeito de agradecer.","A pressa passa, a conquista fica."];
 /* ---------- app ---------- */
-const ICON={inicio:"M3 11l9-8 9 8M5 10v10h14V10",gastos:"M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6",dividas:"M3 6h18v12H3zM3 10h18",meta:"M4 18a9 9 0 1116 0M12 14l4-5",plano:"M4 20V10M10 20V4M16 20v-7M21 20H3"};
+const ICON={inicio:"M3 11l9-8 9 8M5 10v10h14V10",dividas:"M3 6h18v12H3zM3 10h18",meta:"M4 18a9 9 0 1116 0M12 14l4-5",plano:"M4 20V10M10 20V4M16 20v-7M21 20H3"};
 function App(){
   const [tab,setTab]=useState("inicio");
   const [exps,setExps]=useLS("luan_exp",[]);
@@ -430,7 +434,7 @@ function App(){
 
   const yv=proj.map(p=>p.bal),hi=Math.max(0,...yv),lo=Math.min(0,...yv),rg=(hi-lo)||1,zero=hi/rg*100;
   return html`<div class="wrap">
-    <div class="top"><div><div class="brand" style=${{marginBottom:14,display:"flex",alignItems:"center",gap:8}}><svg viewBox="80 80 300 300" width="22" height="22" aria-hidden="true"><path d="M107 149 A180 180 0 0 1 365 149" fill="none" stroke="#A6ADB6" stroke-width="17" stroke-linecap="round" stroke-dasharray="45 13"/><path d="M305 90 A180 180 0 0 1 365 149" fill="none" stroke="#E5252F" stroke-width="17" stroke-linecap="round"/><path d="M92 333 L145 174 L229 266 L307 174 L365 333 L309 333 L287 258 L230 326 L169 257 L148 333 Z" fill="#fff"/><path d="M182 359 L327 359 L294 373 L160 373 Z" fill="#E5252F"/></svg><span>MARCHA</span><b style=${{color:"#F5F6F8",fontWeight:400,fontStyle:"normal",fontFamily:"Inter"}}>by LC<span style=${{color:"#E5252F",fontWeight:800}}>28</span></b></div><div class="mut sm">${MF[now.getMonth()]} de ${now.getFullYear()}</div><h1>${{inicio:"Olá, Magnata",gastos:"Gastos",dividas:"Dívidas",meta:"Seu cofre",plano:"Planejamento"}[tab]}</h1></div><div class="flex" style=${{alignSelf:"flex-start"}}><span style=${{position:"relative"}}><button class="btn gh s" aria-label="Lembretes" onClick=${()=>setBell(!bell)}>🔔</button>${bkDue&&html`<i class="bdot"></i>`}
+    <div class="top"><div><div class="brand" style=${{marginBottom:14,display:"flex",alignItems:"center",gap:8}}><svg viewBox="80 80 300 300" width="22" height="22" aria-hidden="true"><path d="M107 149 A180 180 0 0 1 365 149" fill="none" stroke="#A6ADB6" stroke-width="17" stroke-linecap="round" stroke-dasharray="45 13"/><path d="M305 90 A180 180 0 0 1 365 149" fill="none" stroke="#E5252F" stroke-width="17" stroke-linecap="round"/><path d="M92 333 L145 174 L229 266 L307 174 L365 333 L309 333 L287 258 L230 326 L169 257 L148 333 Z" fill="#fff"/><path d="M182 359 L327 359 L294 373 L160 373 Z" fill="#E5252F"/></svg><span>MARCHA</span><b style=${{color:"#F5F6F8",fontWeight:400,fontStyle:"normal",fontFamily:"Inter"}}>by LC<span style=${{color:"#E5252F",fontWeight:800}}>28</span></b></div><div class="mut sm">${MF[now.getMonth()]} de ${now.getFullYear()}</div><h1>${{inicio:"Olá, Magnata",dividas:"Dívidas",meta:"Seu cofre",plano:"Planejamento"}[tab]}</h1></div><div class="flex" style=${{alignSelf:"flex-start"}}><span style=${{position:"relative"}}><button class="btn gh s" aria-label="Lembretes" onClick=${()=>setBell(!bell)}>🔔</button>${bkDue&&html`<i class="bdot"></i>`}
         ${bell&&html`<div class="bpop"><div class="sm" style=${{fontWeight:600}}>${bkDue?"Backup da semana":"Tudo em dia ✓"}</div><div class="mut" style=${{fontSize:12,margin:"2px 0 10px"}}>${bk?"Último: "+(Math.floor((Date.now()-bk)/864e5)||"hoje")+(Math.floor((Date.now()-bk)/864e5)?" dias atrás":""):"Nunca feito"}</div><button class="btn s" style=${{width:"100%"}} onClick=${()=>{backup();setBell(false)}}>Salvar backup</button></div>`}</span><button class="btn gh s" aria-label="Atualizar app" onClick=${()=>location.replace(location.pathname+"?v="+Date.now())}>↻</button><button class="btn gh s" onClick=${()=>{sessionStorage.removeItem("luan_ok");location.reload()}}>Sair</button></div></div>
 
     ${tab==="inicio"&&html`<div class="stack">
@@ -518,7 +522,6 @@ function Login({onLogin}){
   const slides=wall?walls:["login.jpg?b=4","w15.jpg?b=4","w11.jpg?b=4","w12.jpg?b=4","w10.jpg?b=4","w2.jpg?b=4","w6.jpg?b=4","w3.jpg?b=4","w13.jpg?b=4","w8.jpg?b=4","w17.jpg?b=4","w7.jpg?b=4","w14.jpg?b=4","w9.jpg?b=4","w4.jpg?b=4"];
   const [si,setSi]=useState(0);useEffect(()=>{if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;const t=setInterval(()=>setSi(x=>x+1),3000);return()=>clearInterval(t)},[]);
   const hr=new Date().getHours(),sau=hr<12?"Bom dia":hr<18?"Boa tarde":"Boa noite";
-  const fr=FR[Math.floor((Date.now()-new Date(new Date().getFullYear(),0,0))/864e5+15*99-321)%FR.length];
   return html`<form onSubmit=${ck} class="lg">
     <div class="lgtrack" aria-hidden="true" style=${{transform:"translateX(-"+(si%slides.length)*100+"%)"}}>${slides.map((u,k)=>html`<div key=${k} class="lgsl"><img class="lgblur" src=${u} alt=""/><img class="lgimg" src=${u} alt=""/></div>`)}</div><div class="lgsh" aria-hidden="true"></div>
     <div class="lgtop">
@@ -534,7 +537,8 @@ function Login({onLogin}){
     </div></form>`;
 }
 function Root(){const [a,setA]=useState(()=>sessionStorage.getItem("luan_ok")==="1");return a?html`<${App}/>`:html`<${Login} onLogin=${()=>setA(true)}/>`}
-ReactDOM.createRoot(document.getElementById("root")).render(html`<${Root}/>`);
+(function(){let ok=false;const go=()=>{if(ok)return;ok=true;ReactDOM.createRoot(document.getElementById("root")).render(html`<${Root}/>`)};
+  const t=setTimeout(go,2500);chkVer().then(up=>{if(!up){clearTimeout(t);go()}})})();
 </script>
 </body>
 </html>
