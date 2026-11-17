@@ -110,7 +110,7 @@ label.f .in{color:#F5F6F8}
 <script>
 "use strict";
 /* atualizacao automatica: se houver versao mais nova publicada, recarrega sozinho */
-(function(){const V="14";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V&&new URLSearchParams(location.search).get("v")!==t)location.replace(location.pathname+"?v="+t)}).catch(()=>{})}
+(function(){const V="15";function ck(){fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():V).then(t=>{t=t.trim();if(t&&t!==V&&new URLSearchParams(location.search).get("v")!==t)location.replace(location.pathname+"?v="+t)}).catch(()=>{})}
 ck();document.addEventListener("visibilitychange",()=>{if(!document.hidden)ck()})})();
 const {useState,useEffect,useMemo}=React;
 const h=(t,p,...c)=>{if(p&&"class" in p){p=Object.assign({},p,{className:p.class});delete p.class}return React.createElement(t,p,...c)};
@@ -277,7 +277,7 @@ function Meta({g,save}){
       <p class="mut sm" style=${{margin:"4px 0 14px"}}>Sem pressa e sem prazo. Elas ficam aqui só para lembrar para onde a estrada vai.</p>
       ${edit?html`<div>${wish.map(w=>html`<div key=${w.id} class="flex" style=${{marginBottom:8}}><input class="in" style=${{flex:2,minWidth:0}} aria-label="Modelo" placeholder="modelo" value=${w.n} onChange=${e=>upW(w.id,"n",e.target.value)}/><input class="in" style=${{flex:1,minWidth:0}} type="number" inputMode="decimal" aria-label="Valor em reais" placeholder="valor" value=${w.v||""} onChange=${e=>upW(w.id,"v",num(e.target.value))}/><button class="mut" aria-label=${"Remover "+w.n} style=${{padding:"6px 8px"}} onClick=${()=>set("wish",wish.filter(x=>x.id!==w.id))}>✕</button></div>`)}<button class="btn gh s" onClick=${()=>set("wish",wish.concat([{id:Date.now(),n:"",v:0}]))}>Adicionar moto</button></div>`
       :html`<div class="scroll">${wish.slice().sort((a,b)=>a.v-b.v).map(w=>html`<div key=${w.id} class="bk">${w.id<=4?html`<img src=${"w"+w.id+".jpg"} alt=${w.n} loading="lazy"/>`:html`<div class="ph">🏍️</div>`}<div style=${{fontWeight:600}}>${w.n}</div><span class="mut">${w.v>0&&saved>=w.v?"✓ alcançada":short(w.v)}</span></div>`)}</div>`}
-      <p class="mut" style=${{fontSize:11,marginTop:10}}>Fotos: AVMOTO e Cjp24 (CC BY-SA 4.0), Lamb Chop Rides (CC BY 3.0), via Wikimedia Commons.</p>
+      <p class="mut" style=${{fontSize:11,marginTop:10}}>Fotos: Cjp24 (CC BY-SA 4.0), Lamb Chop Rides (CC BY 3.0), via Wikimedia Commons.</p>
     </div>
     <div class="card">
       <h2>Já passaram pela garagem</h2>
