@@ -143,7 +143,7 @@ body:has(.lg)::before{display:none}
 .fidb{width:64px;height:64px;border-radius:50%;background:rgba(229,37,47,.92);color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(229,37,47,.45)}
 .trip{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px}.trip label{font-size:11px;color:var(--mut)}.trip .in{min-height:38px;padding:6px 8px;font-size:16px;margin-top:2px}
 /* ui-ux-pro-max: alvos de toque >=44px sem mudar o visual, textos minimos, movimento reduzido */
-button.pill,.lgic{position:relative}button.pill::after,.flag::after,.lgic::after{content:"";position:absolute;inset:-8px}
+button.pill,.lgic{position:relative}button.pill::after,.flag::after,.lgic::after{content:"";position:absolute;inset:-8px}.mbar::after{content:"";position:absolute;inset:0 -2px}
 .top{position:relative}.top .btn.s{min-height:44px;min-width:44px}
 nav button{font-size:12px}
 @media (prefers-reduced-motion:reduce){.lgtrack,.needle,.bar i{transition:none!important}}
@@ -174,7 +174,7 @@ html{-webkit-text-size-adjust:100%}body{overscroll-behavior-y:none}h1,h2,h3{text
 <script>
 "use strict";
 /* atualizacao automatica: se houver versao mais nova publicada, recarrega sozinho */
-const APPV="64";
+const APPV="65";
 function chkVer(){return fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():"").then(t=>{t=t.trim();if(t&&t!==APPV){const k="upd_"+t,n=+(sessionStorage.getItem(k)||0);if(n<3){sessionStorage.setItem(k,n+1);location.replace(location.pathname+"?v="+t+"&r="+Date.now());return true}}return false}).catch(()=>false)}
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)chkVer()});
 const {useState,useEffect,useMemo}=React;
@@ -513,7 +513,7 @@ function App(){
       <div class="card">
         <div class="row"><h2>Sobra mês a mês</h2><span class="mut sm">12 meses</span></div>
         <div style=${{position:"relative",height:130,display:"flex",gap:4,marginTop:14}}>
-          ${proj.map((p,i)=>{const hh=Math.max(2,Math.abs(p.bal)/rg*100);return html`<button key=${i} aria-label=${p.full+": "+sg(p.bal)} style=${{flex:1,position:"relative",height:"100%"}} onClick=${()=>setSel(i)}>
+          ${proj.map((p,i)=>{const hh=Math.max(2,Math.abs(p.bal)/rg*100);return html`<button key=${i} class="mbar" aria-label=${p.full+": "+sg(p.bal)} style=${{flex:1,position:"relative",height:"100%"}} onClick=${()=>setSel(i)}>
             <i style=${{position:"absolute",left:0,right:0,borderRadius:3,height:hh+"%",top:(p.bal>=0?zero-hh:zero)+"%",background:p.bal>=0?"var(--ok)":"var(--bad)",opacity:sel===i?1:.45}}></i></button>`})}
           <i style=${{position:"absolute",left:0,right:0,top:zero+"%",borderTop:"1px solid var(--mut)"}}></i>
         </div>
