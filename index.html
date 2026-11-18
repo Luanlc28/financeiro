@@ -163,7 +163,7 @@ nav button{font-size:12px}
 <script>
 "use strict";
 /* atualizacao automatica: se houver versao mais nova publicada, recarrega sozinho */
-const APPV="61";
+const APPV="62";
 function chkVer(){return fetch("version.txt?"+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.text():"").then(t=>{t=t.trim();if(t&&t!==APPV){const k="upd_"+t,n=+(sessionStorage.getItem(k)||0);if(n<3){sessionStorage.setItem(k,n+1);location.replace(location.pathname+"?v="+t+"&r="+Date.now());return true}}return false}).catch(()=>false)}
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)chkVer()});
 const {useState,useEffect,useMemo}=React;
@@ -307,7 +307,7 @@ function Meta({g,save}){
   const set=(k,val)=>save(Object.assign({},g,{[k]:val}));
   const deps=g.deps||[],wish=g.wish||[],bikes=g.bikes||BK,cur=mk(Date.now());
   const [cof,setCof]=useState("moto");const sv=t=>deps.filter(x=>(x.c||"moto")===t).reduce((a,x)=>a+x.v,0),S=w=>sv(w.t||"moto");
-  const saved=sv(cof),month=deps.filter(x=>mk(x.ts)===cur).reduce((a,x)=>a+x.v,0);
+  const saved=Math.max(0,sv(cof)),month=deps.filter(x=>mk(x.ts)===cur).reduce((a,x)=>a+x.v,0);
   const stops=STOPS.map(x=>({v:x})).concat(wish.filter(w=>w.v>0&&(w.t||"moto")===cof).map(w=>({v:w.v,w}))).sort((a,b)=>a.v-b.v);
   const ni=stops.findIndex(x=>x.v>saved),next=ni<0?null:stops[ni],prev=ni>0?stops[ni-1].v:0;
   const pct=next?Math.max(0,(saved-prev)/(next.v-prev)*100):100;
@@ -346,7 +346,8 @@ function Meta({g,save}){
       <div class="flex">${[10,20,50,100].map(n=>html`<button key=${n} class="chipb" aria-label=${"Guardar "+n+" reais"} onClick=${()=>dep(n)}>+${n}</button>`)}</div>
       <div class="flex"><input class="in" style=${{flex:1,minWidth:0}} inputMode="decimal" aria-label="Outro valor em reais" placeholder="outro valor" value=${v} onChange=${e=>setV(e.target.value)}/>
       <button class="btn" onClick=${()=>dep(num(v))}>Guardar</button><button class="btn gh" onClick=${()=>dep(-num(v))}>Retirar</button></div>
-      <div>${deps.filter(x=>(x.c||"moto")===cof).slice().reverse().slice(0,5).map(x=>html`<div key=${x.id} class="item row"><span class="mut">${dk(x.ts).slice(8)}/${dk(x.ts).slice(5,7)}</span><span class="flex" style=${{alignItems:"center"}}><span class=${"num "+(x.v<0?"bad":"ok")} style=${{fontSize:18}}>${x.v<0?"- ":"+ "}${fmt(x.v)}</span><button class="mut" aria-label="Excluir lançamento" style=${{padding:"6px 10px"}} onClick=${()=>set("deps",deps.filter(y=>y.id!==x.id))}>✕</button></span></div>`)}</div>
+      <div style=${{maxHeight:260,overflowY:"auto"}}>${deps.filter(x=>(x.c||"moto")===cof).slice().reverse().map(x=>html`<div key=${x.id} class="item row"><span class="mut">${dk(x.ts).slice(8)}/${dk(x.ts).slice(5,7)}</span><span class="flex" style=${{alignItems:"center"}}><span class=${"num "+(x.v<0?"bad":"ok")} style=${{fontSize:18}}>${x.v<0?"- ":"+ "}${fmt(Math.abs(x.v))}</span><button class="mut" aria-label="Excluir lançamento" style=${{padding:"6px 10px"}} onClick=${()=>set("deps",deps.filter(y=>y.id!==x.id))}>✕</button></span></div>`)}</div>
+      ${saved!==0&&html`<button class="mut sm" style=${{marginTop:10,textDecoration:"underline"}} onClick=${()=>{if(confirm("Apagar todos os lançamentos deste cofre? Isso zera o total e as paradas dele."))set("deps",deps.filter(y=>(y.c||"moto")!==cof))}}>Zerar este cofre</button>`}
     </div>
     <div class="card"><div class="row"><h2>✈️ Viagens</h2><button class="btn s" onClick=${()=>setTf({id:0,n:"",dt:"",b:{},img:""})}>Planejar viagem</button></div>
       ${wish.filter(w=>w.t==="viagem").length===0?html`<p class="mut sm" style=${{marginTop:8}}>Nenhuma viagem planejada ainda.</p>`:wish.filter(w=>w.t==="viagem").map(w=>html`<button key=${w.id} class="item" style=${{display:"block"}} onClick=${()=>setTf({id:w.id,n:w.n||"",dt:w.dt||"",b:Object.assign({},w.b||{}),img:w.img||""})}><div class="row"><span style=${{fontWeight:600}}>${w.n||"Sem destino"}</span><span class="num">${fmt(w.v)}</span></div><div class="row mut" style=${{fontSize:12,marginTop:2}}><span>${w.dt?MS[+w.dt.slice(5)-1]+"/"+w.dt.slice(0,4):"sem data"}${w.dt&&w.v>S(w)?" · "+short(Math.ceil((w.v-S(w))/mesAte(w.dt)))+"/mês":""}</span><span>${w.v>0?Math.min(100,Math.floor(S(w)/w.v*100))+"%":""}</span></div><div class="bar" style=${{height:6,marginTop:6}}><i style=${{width:(w.v>0?Math.min(100,Math.max(2,S(w)/w.v*100)):0)+"%",background:"#E5252F"}}></i></div></button>`)}
